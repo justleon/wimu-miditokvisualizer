@@ -1,0 +1,8 @@
+# Ignore general configuration files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+.pytest_cache/
+local_settings.py
+logs/

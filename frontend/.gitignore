@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+
+# npm
+package-lock.json
+npm-debug.log
+yarn-error.log
+yarn.lock
+
+# Compiled JavaScript
+dist/
+build/
+out/
+*.js
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment Variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE Files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Dependency directories
+.jest/
+coverage/
+.pnpm/
+pnpm-lock.yaml
+test-results/
+
+# Testing
+e2e/
+__snapshots__/
+cypress/videos/
+cypress/screenshots/
+jest.config.js
+jest.setup.js
+
+# Build
+build/
+*.map
