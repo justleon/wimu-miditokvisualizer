@@ -6,9 +6,10 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.11,<3.12"
 fastapi = "^0.104.1"
 uvicorn = "^0.23.2"
+miditok = "^2.1.7"
 
 
 [tool.poetry.group.dev.dependencies]
