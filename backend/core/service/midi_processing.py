@@ -21,11 +21,10 @@ TOKENIZER_PARAMS = {
 }
 
 
-def process_file():
+def tokenize_midi_file():
     config = TokenizerConfig(**TOKENIZER_PARAMS)
-
     tokenizer = REMI(config)
 
     midi = MidiFile(EXAMPLE_FILE_PATH)
     tokens = tokenizer(midi)
-    return tokens[0][0]
+    return len(tokens)
