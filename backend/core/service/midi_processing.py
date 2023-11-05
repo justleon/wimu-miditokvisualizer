@@ -1,10 +1,6 @@
-import os
+from io import BytesIO
 from miditok import REMI, TokenizerConfig
 from miditoolkit import MidiFile
-
-from core.constants import DATA_DIR
-
-EXAMPLE_FILE_PATH = os.path.join(DATA_DIR, "example.mid")
 
 TOKENIZER_PARAMS = {
     "pitch_range": (21, 109),
@@ -21,10 +17,10 @@ TOKENIZER_PARAMS = {
 }
 
 
-def tokenize_midi_file():
+def tokenize_midi_file(midi_bytes: bytes):
     config = TokenizerConfig(**TOKENIZER_PARAMS)
     tokenizer = REMI(config)
 
-    midi = MidiFile(EXAMPLE_FILE_PATH)
+    midi = MidiFile(file=BytesIO(midi_bytes))
     tokens = tokenizer(midi)
-    return len(tokens)
+    return tokens
