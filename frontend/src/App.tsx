@@ -1,35 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import FileUpload from './components/FileUpload';
+
 
 function App() {
-  const [data, setData] = useState(null);
+  const [uploadResponse, setUploadResponse] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}`)
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error('Error:', error));
-  }, []);
+  const handleFileChange = (file: File) => {
+    setSelectedFile(file);
+  };
+
+  const handleUpload = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => setUploadResponse(data))
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+        });
+    }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+        <form onSubmit={handleUpload}>
+          <FileUpload onFileSelect={handleFileChange} />
+          <button type="submit">Upload</button>
+        </form>
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          {uploadResponse ? (<pre>{JSON.stringify(uploadResponse, null, 2)}</pre>) : null}
         </p>
-        <p>
-          {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
