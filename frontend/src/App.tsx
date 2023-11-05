@@ -38,13 +38,8 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : null}
         </p>
-        <p>
-          {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}
-        </p>
-      </header>
-      <div className="App-body">
         <form onSubmit={handleUpload}>
           <input
             type="file"
@@ -54,7 +49,7 @@ function App() {
           />
           <button type="submit">Upload</button>
         </form>
-      </div>
+      </header>
     </div>
   );
 }
