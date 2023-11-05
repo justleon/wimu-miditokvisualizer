@@ -1,18 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import FileUpload from './components/FileUpload';
+
 
 function App() {
-  const [data, setData] = useState(null);
+  const [uploadResponse, setUploadResponse] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-
-    if (files && files[0]) {
-      setSelectedFile(files[0]);
-    }
+  const handleFileChange = (file: File) => {
+    setSelectedFile(file);
   };
 
   const handleUpload = (event: React.FormEvent) => {
@@ -26,7 +23,7 @@ function App() {
         body: formData,
       })
         .then((response) => response.json())
-        .then((data) => setData(data))
+        .then((data) => setUploadResponse(data))
         .catch((error) => {
           console.error('Error uploading file:', error);
         });
@@ -37,18 +34,13 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : null}
-        </p>
         <form onSubmit={handleUpload}>
-          <input
-            type="file"
-            accept=".mid"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
+          <FileUpload onFileSelect={handleFileChange} />
           <button type="submit">Upload</button>
         </form>
+        <p>
+          {uploadResponse ? (<pre>{JSON.stringify(uploadResponse, null, 2)}</pre>) : null}
+        </p>
       </header>
     </div>
   );
