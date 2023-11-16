@@ -21,6 +21,7 @@ function App() {
   const [usePrograms, setUsePrograms] = useState<boolean>(false);
   const [selectedNbTempos, setSelectedNbTempos] = useState<number>(32);
   const [selectedTempoRange, setSelectedTempoRange] = useState<number[]>([40, 250]);
+  const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
 
   const handleFileChange = (file: File) => {
     setSelectedFile(file);
@@ -72,6 +73,10 @@ function App() {
 
   const handleTempoRangeChange = (newValues: number[]) => {
     setSelectedTempoRange(newValues);
+  };
+
+  const toggleTokenizerConfig = () => {
+    setShowTokenizerConfig(!showTokenizerConfig);
   };
 
   const handleUpload = (event: React.FormEvent) => {
@@ -127,6 +132,12 @@ function App() {
             </div>
           </div>
 
+          <button type="button" onClick={toggleTokenizerConfig}>
+            {showTokenizerConfig ? 'Hide Tokenizer Config' : 'Show Tokenizer Config'}
+          </button>
+
+          {showTokenizerConfig && (
+            <>
           <div className="form-row">
             <div className="label-container">
               <label htmlFor="pitchRange">Select Pitch Range: </label>
@@ -218,10 +229,14 @@ function App() {
             </div>
           </div>
 
+          </>
+          )}
+
           <div className="form-row">
             <FileUpload onFileSelect={handleFileChange} />
             <button type="submit">Upload</button>
           </div>
+
         </form>
         <p>
           {uploadResponse ? (<pre>{JSON.stringify(uploadResponse, null, 2)}</pre>) : null}
