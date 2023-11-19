@@ -241,7 +241,7 @@ function App() {
           )}
 
           <div className="form-row">
-            <FileUpload onFileSelect={handleFileChange} />
+            <FileUpload onFileSelect={handleFileChange} acceptedFormats={".mid"}/>
             <button type="submit">Upload</button>
           </div>
 
