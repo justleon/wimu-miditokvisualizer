@@ -41,7 +41,7 @@ async def process(
         max_tempo: int = Form(...)
 ):
     try:
-        if file.content_type not in ["audio/midi", "audio/x-midi"]:
+        if file.content_type not in ["audio/mid", "audio/midi", "audio/x-mid", "audio/x-midi"]:
             raise HTTPException(status_code=415, detail="Unsupported file type")
         midi_bytes: bytes = await file.read()
         tokens: list = tokenize_midi_file(midi_bytes=midi_bytes, tokenizer=tokenizer, min_pitch=min_pitch,

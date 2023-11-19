@@ -104,10 +104,15 @@ function App() {
         method: 'POST',
         body: formData,
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        })
         .then((data: ApiResponse) => setResponseData(data))
         .catch((error) => {
-          console.error('Error uploading file:', error);
+          console.log(error);
         });
     }
   };
@@ -146,7 +151,7 @@ function App() {
               <label htmlFor="pitchRange">Select Pitch Range: </label>
             </div>
             <div className="select-container">
-              <RangeSlider onRangeChange={handlePitchRangeChange}/>
+              <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 100]}/>
             </div>
           </div>
 
@@ -157,7 +162,7 @@ function App() {
               <label htmlFor="velocityBins">Number of velocity bins: </label>
             </div>
             <div className="select-container">
-              <SingleValueSlider onValueChange={handleVelocityBinsChange}/>
+              <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 100]}/>
             </div>
           </div>
 
@@ -219,7 +224,7 @@ function App() {
               <label htmlFor="nbTempos">Number of tempos bins: </label>
             </div>
             <div className="select-container">
-              <SingleValueSlider onValueChange={handleNbTemposChange}/>
+              <SingleValueSlider onValueChange={handleNbTemposChange} initialValue={selectedNbTempos} limits={[0, 100]}/>
             </div>
           </div>
 
@@ -228,7 +233,7 @@ function App() {
               <label htmlFor="tempoRange">Select Tempo Range: </label>
             </div>
             <div className="select-container">
-              <RangeSlider onRangeChange={handleTempoRangeChange}/>
+              <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 100]}/>
             </div>
           </div>
 
