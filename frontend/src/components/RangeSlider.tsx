@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import ReactSlider from 'react-slider';
 
 interface RangeSliderProps {
-    onRangeChange: (newValues: number[]) => void;
-  }
+  onRangeChange: (newValues: number[]) => void;
+}
 
-  const RangeSlider: React.FC<RangeSliderProps> = ({ onRangeChange }) => {
+const RangeSlider: React.FC<RangeSliderProps> = ({ onRangeChange }) => {
   const [values, setValues] = useState([21, 109]);
-  
 
   const handleSliderChange = (newValues: number | number[]) => {
     if (Array.isArray(newValues)) {
