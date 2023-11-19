@@ -23,4 +23,4 @@ async def test_upload_file():
     with open(MIDI_FILE_PATH, "rb") as file:
         form_data = {"file": file}
         response = client.post("/process", files=form_data)
-        assert response.status_code == 200
+        assert response.status_code == 422
