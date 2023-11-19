@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import FileUpload from './components/FileUpload';
+import DataDisplay from './components/DataDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
-
+import { ApiResponse } from './interfaces/ApiResponse';
 
 function App() {
-  const [uploadResponse, setUploadResponse] = useState<string>('');
+  const [responseData, setResponseData] = useState<ApiResponse | null>(null);
   const [selectedTokenizer, setSelectedTokenizer] = useState<string>('REMI');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
@@ -85,7 +86,8 @@ function App() {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('tokenizer', selectedTokenizer);
-      formData.append('pitch_range', JSON.stringify(selectedPitchRange));
+      formData.append('min_pitch', JSON.stringify(selectedPitchRange?.[0]));
+      formData.append('max_pitch', JSON.stringify(selectedPitchRange?.[1]));
       formData.append('velocity_bins', JSON.stringify(selectedVelocityBins));
       formData.append('use_chords', JSON.stringify(useChords));
       formData.append('use_rests', JSON.stringify(useRests));
@@ -95,14 +97,15 @@ function App() {
       formData.append('use_pitch_bends', JSON.stringify(usePitchBends));
       formData.append('use_programs', JSON.stringify(usePrograms));
       formData.append('nb_tempos', JSON.stringify(selectedNbTempos));
-      formData.append('tempo_range', JSON.stringify(selectedTempoRange));
+      formData.append('min_tempo', JSON.stringify(selectedTempoRange?.[0]));
+      formData.append('max_tempo', JSON.stringify(selectedTempoRange?.[1]));
 
       fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
         method: 'POST',
         body: formData,
       })
         .then((response) => response.json())
-        .then((data) => setUploadResponse(data))
+        .then((data: ApiResponse) => setResponseData(data))
         .catch((error) => {
           console.error('Error uploading file:', error);
         });
@@ -238,9 +241,9 @@ function App() {
           </div>
 
         </form>
-        <p>
-          {uploadResponse ? (<pre>{JSON.stringify(uploadResponse, null, 2)}</pre>) : null}
-        </p>
+      <div>
+        {responseData && <DataDisplay data={responseData} />}
+      </div>
       </header>
     </div>
   );
