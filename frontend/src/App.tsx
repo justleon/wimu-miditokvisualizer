@@ -151,7 +151,7 @@ function App() {
               <label htmlFor="pitchRange">Select Pitch Range: </label>
             </div>
             <div className="select-container">
-              <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 100]}/>
+              <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 150]}/>
             </div>
           </div>
 
@@ -233,7 +233,7 @@ function App() {
               <label htmlFor="tempoRange">Select Tempo Range: </label>
             </div>
             <div className="select-container">
-              <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 100]}/>
+              <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 350]}/>
             </div>
           </div>
 

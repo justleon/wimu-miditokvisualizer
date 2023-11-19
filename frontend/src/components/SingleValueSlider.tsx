@@ -3,10 +3,12 @@ import ReactSlider from 'react-slider';
 
 interface SingleValueSliderProps {
   onValueChange: (newValue: number) => void;
+  initialValue: number;
+  limits: number[];
 }
 
-const SingleValueSlider: React.FC<SingleValueSliderProps> = ({ onValueChange }) => {
-  const [value, setValue] = useState(32);
+const SingleValueSlider: React.FC<SingleValueSliderProps> = ({ onValueChange, initialValue, limits }) => {
+  const [value, setValue] = useState(initialValue);
 
   const handleSliderChange = (newValue: number) => {
     setValue(newValue);
@@ -23,8 +25,8 @@ const SingleValueSlider: React.FC<SingleValueSliderProps> = ({ onValueChange }) 
         ariaLabel="Slider thumb"
         ariaValuetext={state => `Thumb value ${state.valueNow}`}
         renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-        min={0}
-        max={100}
+        min={limits[0]}
+        max={limits[1]}
         onChange={handleSliderChange}
       />
     </div>
