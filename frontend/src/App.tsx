@@ -248,7 +248,7 @@ function App() {
 
         </form>
       <div>
-        <ErrorBoundary>
+        <ErrorBoundary fallback={<p>Something went wrong</p>}>
           {responseData && <DataDisplay data={responseData} />}
         </ErrorBoundary>
       </div>

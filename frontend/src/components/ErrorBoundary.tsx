@@ -2,6 +2,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
+  fallback: ReactNode;
 }
 
 interface ErrorBoundaryState {
@@ -28,21 +29,14 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by componentDidCatch:', error, errorInfo);
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('Error caught by componentDidCatch:', error, info);
   }
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div>
-          <h2>Something went wrong.</h2>
-          <p>{this.state.error && this.state.error.toString()}</p>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.errorInfo && this.state.errorInfo.componentStack}
-          </details>
-        </div>
-      );
+      // You can render any custom fallback UI
+      return this.props.fallback;
     }
 
     return this.props.children;
