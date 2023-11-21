@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import ReactSlider from 'react-slider';
 
 interface RangeSliderProps {
-    onRangeChange: (newValues: number[]) => void;
-  }
+  onRangeChange: (newValues: number[]) => void;
+  initialValues: number[];
+  limits: number[];
+}
 
-  const RangeSlider: React.FC<RangeSliderProps> = ({ onRangeChange }) => {
-  const [values, setValues] = useState([21, 109]);
-  
+const RangeSlider: React.FC<RangeSliderProps> = ({ onRangeChange, initialValues, limits }) => {
+  const [values, setValues] = useState(initialValues);
 
   const handleSliderChange = (newValues: number | number[]) => {
     if (Array.isArray(newValues)) {
@@ -28,6 +29,8 @@ interface RangeSliderProps {
         renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
         pearling
         minDistance={10}
+        min={limits[0]}
+        max={limits[1]}
         onChange={handleSliderChange}
       />
     </div>
