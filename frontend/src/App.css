@@ -41,3 +41,8 @@
   margin-bottom: 10px;
   align-items: center;
 }
+
+button:disabled {
+  background-color: #282c34;
+  border: none;
+}
