@@ -130,7 +130,7 @@ function App() {
               <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
                 <option value="REMI">REMI</option>
                 <option value="REMIPlus">REMIPlus</option>
-                <option value="MIDI-like">MIDI-like</option>
+                <option value="MIDILike">MIDI-like</option>
                 <option value="TSD">TSD</option>
                 <option value="Structured">Structured</option>
                 <option value="CPWord">CPWord</option>
