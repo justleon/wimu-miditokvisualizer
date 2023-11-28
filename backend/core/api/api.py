@@ -2,9 +2,9 @@ from fastapi import FastAPI, File, Form, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from core.service.midi_processing import tokenize_midi_file
-from miditok import TokSequence, Event
 import json
-import numpy as np
+
+from core.service.serializer import TokSequenceEncoder
 
 app = FastAPI()
 
@@ -57,16 +57,3 @@ async def process(
         return JSONResponse(content={"success": False, "data": None, "error": str(e.detail)}, status_code=e.status_code)
     except Exception as e:
         return JSONResponse(content={"success": False, "data": None, "error": str(e)}, status_code=500)
-
-
-class TokSequenceEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, TokSequence):
-            return obj.events
-        if isinstance(obj, Event):
-            return {"type": obj.type, "value": obj.value, "time": obj.time, "program": obj.program, "desc": obj.desc}
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        return super(TokSequenceEncoder, self).default(obj)
