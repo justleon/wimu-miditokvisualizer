@@ -106,15 +106,15 @@ function App() {
         body: formData,
       })
         .then((response) => {
-          if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
-          }
+          // if (!response.ok) {
+          //   throw new Error(`${response.status} ${response.statusText}`);
+          // }
           return response.json();
         })
         .then((data: ApiResponse) => setResponseData(data))
-        .catch((error) => {
-          console.log(error);
-        });
+        // .catch((error) => {
+        //   console.log(error);
+        // });
     }
   };
 
@@ -248,7 +248,7 @@ function App() {
         </form>
       <div>
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-          {responseData && <DataDisplay data={responseData.data} sample={10}/>}
+          {responseData?.data ? <DataDisplay data={responseData.data} sample={10}/> : responseData?.error}
         </ErrorBoundary>
       </div>
       </header>
