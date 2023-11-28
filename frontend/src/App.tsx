@@ -135,7 +135,6 @@ function App() {
                 <option value="Structured">Structured</option>
                 <option value="CPWord">CPWord</option>
                 <option value="Octuple">Octuple</option>
-                <option value="MuMIDI">MuMIDI</option>
                 <option value="MMM">MMM</option>
               </select>
             </div>
