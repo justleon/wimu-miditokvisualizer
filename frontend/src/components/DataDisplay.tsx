@@ -1,48 +1,63 @@
 import React from 'react';
-import { ApiResponse } from '../interfaces/ApiResponse';
+import { Token, NestedList } from '../interfaces/ApiResponse';
 
-const DataDisplay: React.FC<{ data: ApiResponse }> = ({ data }) => {
-  const { sequences } = data;
+interface DataDisplayProps {
+  data: NestedList<Token>;
+  sample: number;
+}
 
-  if (sequences && Array.isArray(sequences)) {
+const DataDisplay: React.FC<DataDisplayProps> = ({ data, sample}) => {
+  interface Column {
+    key: keyof Token;
+    label: string;
+  }
+
+  const renderNestedList = <T extends Token>(list: NestedList<T>, n: number, level: number, parentIndex: number[]): React.ReactNode => {
+
+    const slicedList = list.slice(0, n);
+    const columns: Column[] = [
+        { key: 'type', label: 'Type' },
+        { key: 'value', label: 'Value' },
+        { key: 'time', label: 'Time' },
+        { key: 'program', label: 'Program' },
+        { key: 'desc', label: 'Desc' },
+      ];
+
     return (
       <div>
-        {sequences.map((sequence, sequenceIndex) => (
-          <div key={sequenceIndex}>
-            <h2>Sequence {sequenceIndex + 1}</h2>
-            {sequence.tokens && Array.isArray(sequence.tokens) ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Value</th>
-                    <th>Time</th>
-                    <th>Program</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sequence.tokens.map((token, tokenIndex) => (
-                    <tr key={tokenIndex}>
-                      <td>{token.type}</td>
-                      <td>{token.value}</td>
-                      <td>{token.time}</td>
-                      <td>{token.program}</td>
-                      <td>{token.desc}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <div>Invalid tokens</div>
-            )}
-          </div>
-        ))}
+        {slicedList.map((item, index) => {
+          const currentIndex = [...parentIndex, index + 1];
+          const heading = currentIndex.join('.');
+
+          return (
+            <div key={index}>
+              <strong>{heading}</strong>
+              {Array.isArray(item) ? (
+                renderNestedList(item, n, level + 1, currentIndex)
+              ) : (
+                <div>
+                  {columns
+                    .filter((column) => item[column.key] !== null && item[column.key] !== undefined)
+                    .map((column, columnIndex, arr) => (
+                      <span key={columnIndex}>
+                        <strong>{column.label}:</strong> {item[column.key]}
+                        {columnIndex < arr.length - 1 && ', '}
+                      </span>
+                    ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
-  } else {
-    return <div>Invalid sequences</div>;
+  };
+
+  if (!Array.isArray(data)) {
+    return <div>Invalid data</div>;
   }
+
+  return <div>{renderNestedList(data, sample, 0, [])}</div>;
 };
 
 export default DataDisplay;

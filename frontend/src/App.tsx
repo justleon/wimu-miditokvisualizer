@@ -6,7 +6,7 @@ import DataDisplay from './components/DataDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
@@ -249,7 +249,7 @@ function App() {
         </form>
       <div>
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-          {responseData && <DataDisplay data={responseData} />}
+          {responseData && <DataDisplay data={responseData.data} sample={10}/>}
         </ErrorBoundary>
       </div>
       </header>
