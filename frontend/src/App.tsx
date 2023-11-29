@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import FileUpload from './components/FileUpload';
+import Spinner from './components/Spinner';
 import DataDisplay from './components/DataDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
@@ -10,10 +11,12 @@ import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
+  const [loading, setLoading] = useState(false);
   const [selectedTokenizer, setSelectedTokenizer] = useState<string>('REMI');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
   const [selectedVelocityBins, setSelectedVelocityBins] = useState<number>(32);
+  const [specialTokens, setSpecialTokens] = useState<string>("\"PAD\", \"BOS\", \"EOS\", \"MASK\"");
   const [useChords, setUseChords] = useState<boolean>(true);
   const [useRests, setUseRests] = useState<boolean>(false);
   const [useTempos, setUseTempos] = useState<boolean>(true);
@@ -21,8 +24,17 @@ function App() {
   const [useSustainPedals, setUseSustainPedals] = useState<boolean>(false);
   const [usePitchBends, setUsePitchBends] = useState<boolean>(false);
   const [usePrograms, setUsePrograms] = useState<boolean>(false);
+  const [selectedPrograms, setSelectedPrograms] = useState<number[]>([-1, 127]);
+  const [oneTokenStreamForPrograms, setOneTokenStreamForPrograms] = useState<boolean>(true);
+  const [programChanges, setProgramChanges] = useState<boolean>(false);
   const [selectedNbTempos, setSelectedNbTempos] = useState<number>(32);
   const [selectedTempoRange, setSelectedTempoRange] = useState<number[]>([40, 250]);
+  const [logTempos, setLogTempos] = useState<boolean>(false);
+  const [deleteEqualSuccessiveTempoChanges, setDeleteEqualSuccessiveTempoChanges] = useState<boolean>(false);
+  const [sustainPedalDuration, setSustainPedalDuration] = useState<boolean>(false);
+  const [pitchBendRange, setPitchBendRange] = useState<number[]>([-8192, 8191]);
+  const [pitchBendRangeNumber, setPitchBendRangeNumber] = useState<number>(32);
+  const [deleteEqualSuccessiveTimeSigChanges, setDeleteEqualSuccessiveTimeSigChanges] = useState<boolean>(false);
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
 
   const handleFileChange = (file: File) => {
@@ -39,6 +51,10 @@ function App() {
 
   const handleVelocityBinsChange = (newValue: number) => {
     setSelectedVelocityBins(newValue);
+  };
+
+  const handleSpecialTokensChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSpecialTokens(event.target.value);
   };
 
   const handleUseChordsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,12 +85,48 @@ function App() {
     setUsePrograms(event.target.checked);
   };
 
+  const handleProgramsChange = (newValues: number[]) => {
+    setSelectedPrograms(newValues);
+  };
+  
+  const handleOneTokenStreamForProgramsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOneTokenStreamForPrograms(event.target.checked);
+  };
+  
+  const handleProgramChangesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setProgramChanges(event.target.checked);
+  };
+
   const handleNbTemposChange = (newValue: number) => {
     setSelectedNbTempos(newValue);
   };
 
   const handleTempoRangeChange = (newValues: number[]) => {
     setSelectedTempoRange(newValues);
+  };
+
+  const handleLogTemposChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLogTempos(event.target.checked);
+  };
+  
+  const handleDeleteEqualSuccessiveTempoChangesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDeleteEqualSuccessiveTempoChanges(event.target.checked);
+  };
+
+  const handleSustainPedalDurationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSustainPedalDuration(event.target.checked);
+  };
+  
+  const handlePitchBendRangeChange = (newValues: number[]) => {
+    setPitchBendRange(newValues);
+  };
+
+  const handlePitchBendRangeNumberChange = (newValue: number) => {
+    setPitchBendRangeNumber(newValue);
+  };
+  
+  const handleDeleteEqualSuccessiveTimeSigChangesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDeleteEqualSuccessiveTimeSigChanges(event.target.checked);
   };
 
   const toggleTokenizerConfig = () => {
@@ -90,6 +142,8 @@ function App() {
       formData.append('min_pitch', JSON.stringify(selectedPitchRange?.[0]));
       formData.append('max_pitch', JSON.stringify(selectedPitchRange?.[1]));
       formData.append('velocity_bins', JSON.stringify(selectedVelocityBins));
+      const tokensArray = specialTokens.split(",").map((token) => token.trim());
+      formData.append('special_tokens', JSON.stringify(tokensArray));
       formData.append('use_chords', JSON.stringify(useChords));
       formData.append('use_rests', JSON.stringify(useRests));
       formData.append('use_tempos', JSON.stringify(useTempos));
@@ -97,9 +151,22 @@ function App() {
       formData.append('use_sustain_pedals', JSON.stringify(useSustainPedals));
       formData.append('use_pitch_bends', JSON.stringify(usePitchBends));
       formData.append('use_programs', JSON.stringify(usePrograms));
+      if (usePrograms) {
+        formData.append('programs', JSON.stringify(selectedPrograms));
+        formData.append('one_token_stream_for_programs', JSON.stringify(oneTokenStreamForPrograms));
+        formData.append('program_changes', JSON.stringify(programChanges));
+      }
       formData.append('nb_tempos', JSON.stringify(selectedNbTempos));
       formData.append('min_tempo', JSON.stringify(selectedTempoRange?.[0]));
       formData.append('max_tempo', JSON.stringify(selectedTempoRange?.[1]));
+      formData.append('log_tempos', JSON.stringify(logTempos));
+      formData.append('delete_equal_successive_tempo_changes', JSON.stringify(deleteEqualSuccessiveTempoChanges));
+      formData.append('sustain_pedal_duration', JSON.stringify(sustainPedalDuration));
+      formData.append('pitch_bend_range', JSON.stringify(pitchBendRange));
+      formData.append('pitch_bend_range_number', JSON.stringify(pitchBendRangeNumber));
+      formData.append('delete_equal_successive_time_sig_changes', JSON.stringify(deleteEqualSuccessiveTimeSigChanges));
+
+      setLoading(true);
 
       fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
         method: 'POST',
@@ -114,6 +181,9 @@ function App() {
         .then((data: ApiResponse) => setResponseData(data))
         .catch((error) => {
           console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -152,22 +222,28 @@ function App() {
               <label htmlFor="pitchRange">Select Pitch Range: </label>
             </div>
             <div className="select-container">
-              <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 150]}/>
+              <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 127]}/>
             </div>
           </div>
-
-          {/* TODO: Select beat_res */}
 
           <div className="form-row">
             <div className="label-container">
               <label htmlFor="velocityBins">Number of velocity bins: </label>
             </div>
             <div className="select-container">
-              <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 100]}/>
+              <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 127]}/>
             </div>
           </div>
 
-          {/* TODO: Special tokens*/}
+          <div className="form-row">
+            <label htmlFor="specialTokens">Special Tokens (comma-separated): </label>
+            <input
+              type="text"
+              id="specialTokens"
+              value={specialTokens}
+              onChange={handleSpecialTokensChange}
+            />
+          </div>
 
           <div className="form-row">
             <label>
@@ -182,8 +258,6 @@ function App() {
               Use Rests
             </label>
           </div>
-
-          {/* TODO: Select beat_res_rests */}
 
           <div className="form-row">
             <label>
@@ -220,6 +294,33 @@ function App() {
             </label>
           </div>
 
+          {usePrograms && (
+            <>
+              <div className="form-row">
+                <div className="label-container">
+                  <label htmlFor="programsSlider">MIDI programs: </label>
+                </div>
+                <div className="select-container">
+                  <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 127]} />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <label>
+                  <input type="checkbox" checked={oneTokenStreamForPrograms} onChange={handleOneTokenStreamForProgramsChange} />
+                  One Token Stream for Programs
+                </label>
+              </div>
+
+              <div className="form-row">
+                <label>
+                  <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
+                  Program Changes
+                </label>
+              </div>
+            </>
+          )}
+
           <div className="form-row">
             <div className="label-container">
               <label htmlFor="nbTempos">Number of tempos bins: </label>
@@ -238,12 +339,60 @@ function App() {
             </div>
           </div>
 
+          <div className="form-row">
+            <label>
+              <input type="checkbox" checked={logTempos} onChange={handleLogTemposChange} />
+              Log Scaled Tempo Values
+            </label>
+          </div>
+
+          <div className="form-row">
+            <label>
+              <input type="checkbox" checked={deleteEqualSuccessiveTempoChanges} onChange={handleDeleteEqualSuccessiveTempoChangesChange} />
+              Delete Equal Successive Tempo Changes
+            </label>
+          </div>
+
+          <div className="form-row">
+            <label>
+              <input type="checkbox" checked={sustainPedalDuration} onChange={handleSustainPedalDurationChange} />
+              Sustain Pedal Duration
+            </label>
+          </div>
+
+          <div className="form-row">
+            <div className="label-container">
+              <label htmlFor="pitchBendRange">Select Pitch Bend Range: </label>
+            </div>
+            <div className="select-container">
+              <RangeSlider onRangeChange={handlePitchBendRangeChange} initialValues={pitchBendRange} limits={[-8192, 8191]} />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="label-container">
+              <label htmlFor="pitchBendRangeNumber">Select Pitch Bend Range: </label>
+            </div>
+            <div className="select-container">
+              <SingleValueSlider onValueChange={handlePitchBendRangeNumberChange} initialValue={pitchBendRangeNumber} limits={[0, 100]} />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <label>
+              <input type="checkbox" checked={deleteEqualSuccessiveTimeSigChanges} onChange={handleDeleteEqualSuccessiveTimeSigChangesChange} />
+              Delete Equal Successive Time Signature Changes
+            </label>
+          </div>
+
           </>
           )}
 
           <div className="form-row">
             <FileUpload onFileSelect={handleFileChange} acceptedFormats={".mid"}/>
-            <button type="submit">Upload</button>
+            <button type="submit" disabled={loading}>
+              {loading ? <Spinner /> : 'Upload'}
+            </button>
           </div>
 
         </form>
