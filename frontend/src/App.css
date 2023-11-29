@@ -40,4 +40,10 @@
 .form-row {
   margin-bottom: 10px;
   align-items: center;
+  font-size: 14px;
+}
+
+button:disabled {
+  background-color: #282c34;
+  border: none;
 }
