@@ -6,12 +6,12 @@ interface Token {
   desc: string;
 }
 
-interface Sequence {
-  tokens: Token[];
-}
-
 interface ApiResponse {
-  sequences: Sequence[];
+  success: boolean;
+  data: NestedList<Token>;
+  error: string;
 }
 
-export type { Token, Sequence, ApiResponse };
+type NestedList<T> = Array<T | NestedList<T>>;
+
+export type { Token, ApiResponse, NestedList };

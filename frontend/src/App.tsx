@@ -7,7 +7,7 @@ import DataDisplay from './components/DataDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
@@ -173,9 +173,9 @@ function App() {
         body: formData,
       })
         .then((response) => {
-          if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
-          }
+          // if (!response.ok) {
+          //   throw new Error(`${response.status} ${response.statusText}`);
+          // }
           return response.json();
         })
         .then((data: ApiResponse) => setResponseData(data))
@@ -200,12 +200,11 @@ function App() {
               <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
                 <option value="REMI">REMI</option>
                 <option value="REMIPlus">REMIPlus</option>
-                <option value="MIDI-like">MIDI-like</option>
+                <option value="MIDILike">MIDI-like</option>
                 <option value="TSD">TSD</option>
                 <option value="Structured">Structured</option>
                 <option value="CPWord">CPWord</option>
                 <option value="Octuple">Octuple</option>
-                <option value="MuMIDI">MuMIDI</option>
                 <option value="MMM">MMM</option>
               </select>
             </div>
@@ -398,7 +397,7 @@ function App() {
         </form>
       <div>
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-          {responseData && <DataDisplay data={responseData} />}
+          {responseData?.data ? <DataDisplay data={responseData.data} sample={10}/> : responseData?.error}
         </ErrorBoundary>
       </div>
       </header>

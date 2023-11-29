@@ -1,10 +1,11 @@
 from fastapi import FastAPI, File, Form, UploadFile, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from core.service.midi_processing import tokenize_midi_file
-from miditok import TokSequence, Event
 import json
-import numpy as np
+
+from core.service.midi_processing import tokenize_midi_file
+from core.service.serializer import TokSequenceEncoder
 
 app = FastAPI()
 
@@ -22,13 +23,19 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(content={"success": False, "data": None, "error": 'Invalid request parameters'},
+                        status_code=422)
+
+
 @app.post("/process")
 async def process(
         file: UploadFile = File(...),
-        tokenizer: str = Form(...),
-        min_pitch: int = Form(...),
-        max_pitch: int = Form(...),
-        velocity_bins: int = Form(...),
+        tokenizer: str = Form(...),  # todo: validate tokenizer name
+        min_pitch: int = Form(..., ge=0, le=127),  # todo: validation that min_pitch < max_pitch
+        max_pitch: int = Form(..., ge=0, le=127),
+        velocity_bins: int = Form(..., ge=0, le=127),
         use_chords: bool = Form(...),
         use_rests: bool = Form(...),
         use_tempos: bool = Form(...),
@@ -36,9 +43,9 @@ async def process(
         use_sustain_pedals: bool = Form(...),
         use_pitch_bends: bool = Form(...),
         use_programs: bool = Form(...),
-        nb_tempos: int = Form(...),
-        min_tempo: int = Form(...),
-        max_tempo: int = Form(...)
+        nb_tempos: int = Form(..., ge=0),
+        min_tempo: int = Form(..., ge=0),  # todo: validation that min_tempo < max_tempo
+        max_tempo: int = Form(..., ge=0)
 ):
     try:
         if file.content_type not in ["audio/mid", "audio/midi", "audio/x-mid", "audio/x-midi"]:
@@ -52,21 +59,8 @@ async def process(
                                           use_pitch_bends=use_pitch_bends, min_tempo=min_tempo, max_tempo=max_tempo,
                                           nb_tempos=nb_tempos)
         serialized_tokens = json.dumps(tokens, cls=TokSequenceEncoder)
-        return JSONResponse(content={"sequences": json.loads(serialized_tokens)})
+        return JSONResponse(content={"success": True, "data": json.loads(serialized_tokens), "error": None})
     except HTTPException as e:
-        return JSONResponse(content={"error": str(e.detail)}, status_code=e.status_code)
+        return JSONResponse(content={"success": False, "data": None, "error": str(e.detail)}, status_code=e.status_code)
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
-
-
-class TokSequenceEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, TokSequence):
-            return {"tokens": obj.events}
-        if isinstance(obj, Event):
-            return {"type": obj.type, "value": obj.value, "time": obj.time, "program": obj.program, "desc": obj.desc}
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        return super(TokSequenceEncoder, self).default(obj)
+        return JSONResponse(content={"success": False, "data": None, "error": str(e)}, status_code=500)
