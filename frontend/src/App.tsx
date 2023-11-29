@@ -16,6 +16,7 @@ function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
   const [selectedVelocityBins, setSelectedVelocityBins] = useState<number>(32);
+  const [specialTokens, setSpecialTokens] = useState<string>("\"PAD\", \"BOS\", \"EOS\", \"MASK\"");
   const [useChords, setUseChords] = useState<boolean>(true);
   const [useRests, setUseRests] = useState<boolean>(false);
   const [useTempos, setUseTempos] = useState<boolean>(true);
@@ -50,6 +51,10 @@ function App() {
 
   const handleVelocityBinsChange = (newValue: number) => {
     setSelectedVelocityBins(newValue);
+  };
+
+  const handleSpecialTokensChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSpecialTokens(event.target.value);
   };
 
   const handleUseChordsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +142,8 @@ function App() {
       formData.append('min_pitch', JSON.stringify(selectedPitchRange?.[0]));
       formData.append('max_pitch', JSON.stringify(selectedPitchRange?.[1]));
       formData.append('velocity_bins', JSON.stringify(selectedVelocityBins));
+      const tokensArray = specialTokens.split(",").map((token) => token.trim());
+      formData.append('special_tokens', JSON.stringify(tokensArray));
       formData.append('use_chords', JSON.stringify(useChords));
       formData.append('use_rests', JSON.stringify(useRests));
       formData.append('use_tempos', JSON.stringify(useTempos));
@@ -219,8 +226,6 @@ function App() {
             </div>
           </div>
 
-          {/* TODO: Select beat_res */}
-
           <div className="form-row">
             <div className="label-container">
               <label htmlFor="velocityBins">Number of velocity bins: </label>
@@ -230,7 +235,15 @@ function App() {
             </div>
           </div>
 
-          {/* TODO: Special tokens*/}
+          <div className="form-row">
+            <label htmlFor="specialTokens">Special Tokens (comma-separated): </label>
+            <input
+              type="text"
+              id="specialTokens"
+              value={specialTokens}
+              onChange={handleSpecialTokensChange}
+            />
+          </div>
 
           <div className="form-row">
             <label>
@@ -245,8 +258,6 @@ function App() {
               Use Rests
             </label>
           </div>
-
-          {/* TODO: Select beat_res_rests */}
 
           <div className="form-row">
             <label>
