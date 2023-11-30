@@ -6,13 +6,17 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.11,<3.12"
 fastapi = "^0.104.1"
 uvicorn = "^0.23.2"
+miditok = "^2.1.7"
+python-multipart = "^0.0.6"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
+httpx = "^0.25.1"
+pytest-asyncio = "^0.21.1"
 
 [build-system]
 requires = ["poetry-core"]

@@ -20,7 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(10px + 1vmin);
   color: white;
 }
 
@@ -35,4 +35,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.form-row {
+  margin-bottom: 10px;
+  align-items: center;
+  font-size: 14px;
+}
+
+button:disabled {
+  background-color: #282c34;
+  border: none;
 }
