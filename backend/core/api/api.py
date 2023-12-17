@@ -26,7 +26,7 @@ app.add_middleware(
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    return JSONResponse(content={"success": False, "data": None, "error": str(exc)},
+    return JSONResponse(content={"success": False, "data": None, "error": "Invalid request parameters"},
                         status_code=422)
 
 
