@@ -155,8 +155,7 @@ function App() {
         delete_equal_successive_tempo_changes: deleteEqualSuccessiveTempoChanges,
         delete_equal_successive_time_sig_changes: deleteEqualSuccessiveTimeSigChanges,
         sustain_pedal_duration: sustainPedalDuration,
-        pitch_bend_range: pitchBendRange,
-        pitch_bend_range_number: pitchBendRangeNumber,
+        pitch_bend_range: [...pitchBendRange, pitchBendRangeNumber],
         programs: usePrograms ? selectedPrograms : null,
         one_token_stream_for_programs: usePrograms ? oneTokenStreamForPrograms : null,
         program_changes: usePrograms ? programChanges : null
