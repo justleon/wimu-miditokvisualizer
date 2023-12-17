@@ -24,7 +24,7 @@ function App() {
   const [useSustainPedals, setUseSustainPedals] = useState<boolean>(false);
   const [usePitchBends, setUsePitchBends] = useState<boolean>(false);
   const [usePrograms, setUsePrograms] = useState<boolean>(false);
-  const [selectedPrograms, setSelectedPrograms] = useState<number[]>([-1, 127]);
+  const [selectedPrograms, setSelectedPrograms] = useState<number[]>([-1, 128]);
   const [oneTokenStreamForPrograms, setOneTokenStreamForPrograms] = useState<boolean>(true);
   const [programChanges, setProgramChanges] = useState<boolean>(false);
   const [selectedNbTempos, setSelectedNbTempos] = useState<number>(32);
@@ -298,7 +298,7 @@ function App() {
                   <label htmlFor="programsSlider">MIDI programs: </label>
                 </div>
                 <div className="select-container">
-                  <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 127]} />
+                  <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 128]} />
                 </div>
               </div>
 
