@@ -16,7 +16,7 @@ function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
   const [selectedVelocityBins, setSelectedVelocityBins] = useState<number>(32);
-  const [specialTokens, setSpecialTokens] = useState<string>("\"PAD\", \"BOS\", \"EOS\", \"MASK\"");
+  const [specialTokens, setSpecialTokens] = useState<string>("PAD, BOS, EOS, MASK");
   const [useChords, setUseChords] = useState<boolean>(true);
   const [useRests, setUseRests] = useState<boolean>(false);
   const [useTempos, setUseTempos] = useState<boolean>(true);
