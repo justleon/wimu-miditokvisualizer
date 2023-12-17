@@ -26,7 +26,7 @@ def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
         "delete_equal_successive_time_sig_changes": user_config.delete_equal_successive_time_sig_changes,
         # TODO: dynamic config preparation as not all tokenizers are compatible with program parameters
         # "use_programs": user_config.use_programs,
-        # "programs": user_config.programs,
+        # "programs": list(range(user_config.programs[0], user_config.programs[1])),
         # "one_token_stream_for_programs": user_config.one_token_stream_for_programs,
         # "program_changes": user_config.program_changes,
     }
