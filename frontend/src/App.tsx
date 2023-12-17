@@ -16,7 +16,7 @@ function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
   const [selectedVelocityBins, setSelectedVelocityBins] = useState<number>(32);
-  const [specialTokens, setSpecialTokens] = useState<string>("\"PAD\", \"BOS\", \"EOS\", \"MASK\"");
+  const [specialTokens, setSpecialTokens] = useState<string>("PAD, BOS, EOS, MASK");
   const [useChords, setUseChords] = useState<boolean>(true);
   const [useRests, setUseRests] = useState<boolean>(false);
   const [useTempos, setUseTempos] = useState<boolean>(true);
@@ -24,7 +24,7 @@ function App() {
   const [useSustainPedals, setUseSustainPedals] = useState<boolean>(false);
   const [usePitchBends, setUsePitchBends] = useState<boolean>(false);
   const [usePrograms, setUsePrograms] = useState<boolean>(false);
-  const [selectedPrograms, setSelectedPrograms] = useState<number[]>([-1, 127]);
+  const [selectedPrograms, setSelectedPrograms] = useState<number[]>([-1, 128]);
   const [oneTokenStreamForPrograms, setOneTokenStreamForPrograms] = useState<boolean>(true);
   const [programChanges, setProgramChanges] = useState<boolean>(false);
   const [selectedNbTempos, setSelectedNbTempos] = useState<number>(32);
@@ -137,34 +137,32 @@ function App() {
     event.preventDefault();
     if (selectedFile) {
       const formData = new FormData();
+      const configData = {
+        tokenizer: selectedTokenizer,
+        pitch_range: selectedPitchRange,
+        nb_velocities: selectedVelocityBins,
+        special_tokens: specialTokens.split(",").map((token) => token.trim()),
+        use_chords: useChords,
+        use_rests: useRests,
+        use_tempos: useTempos,
+        use_time_signatures: useTimeSignatures,
+        use_sustain_pedals: useSustainPedals,
+        use_pitch_bends: usePitchBends,
+        use_programs: usePrograms,
+        nb_tempos: selectedNbTempos,
+        tempo_range: selectedTempoRange,
+        log_tempos: logTempos,
+        delete_equal_successive_tempo_changes: deleteEqualSuccessiveTempoChanges,
+        delete_equal_successive_time_sig_changes: deleteEqualSuccessiveTimeSigChanges,
+        sustain_pedal_duration: sustainPedalDuration,
+        pitch_bend_range: [...pitchBendRange, pitchBendRangeNumber],
+        programs: usePrograms ? selectedPrograms : null,
+        one_token_stream_for_programs: usePrograms ? oneTokenStreamForPrograms : null,
+        program_changes: usePrograms ? programChanges : null
+      };
+
       formData.append('file', selectedFile);
-      formData.append('tokenizer', selectedTokenizer);
-      formData.append('min_pitch', JSON.stringify(selectedPitchRange?.[0]));
-      formData.append('max_pitch', JSON.stringify(selectedPitchRange?.[1]));
-      formData.append('velocity_bins', JSON.stringify(selectedVelocityBins));
-      const tokensArray = specialTokens.split(",").map((token) => token.trim());
-      formData.append('special_tokens', JSON.stringify(tokensArray));
-      formData.append('use_chords', JSON.stringify(useChords));
-      formData.append('use_rests', JSON.stringify(useRests));
-      formData.append('use_tempos', JSON.stringify(useTempos));
-      formData.append('use_time_signatures', JSON.stringify(useTimeSignatures));
-      formData.append('use_sustain_pedals', JSON.stringify(useSustainPedals));
-      formData.append('use_pitch_bends', JSON.stringify(usePitchBends));
-      formData.append('use_programs', JSON.stringify(usePrograms));
-      if (usePrograms) {
-        formData.append('programs', JSON.stringify(selectedPrograms));
-        formData.append('one_token_stream_for_programs', JSON.stringify(oneTokenStreamForPrograms));
-        formData.append('program_changes', JSON.stringify(programChanges));
-      }
-      formData.append('nb_tempos', JSON.stringify(selectedNbTempos));
-      formData.append('min_tempo', JSON.stringify(selectedTempoRange?.[0]));
-      formData.append('max_tempo', JSON.stringify(selectedTempoRange?.[1]));
-      formData.append('log_tempos', JSON.stringify(logTempos));
-      formData.append('delete_equal_successive_tempo_changes', JSON.stringify(deleteEqualSuccessiveTempoChanges));
-      formData.append('sustain_pedal_duration', JSON.stringify(sustainPedalDuration));
-      formData.append('pitch_bend_range', JSON.stringify(pitchBendRange));
-      formData.append('pitch_bend_range_number', JSON.stringify(pitchBendRangeNumber));
-      formData.append('delete_equal_successive_time_sig_changes', JSON.stringify(deleteEqualSuccessiveTimeSigChanges));
+      formData.append('config', JSON.stringify(configData));
 
       setLoading(true);
 
@@ -300,7 +298,7 @@ function App() {
                   <label htmlFor="programsSlider">MIDI programs: </label>
                 </div>
                 <div className="select-container">
-                  <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 127]} />
+                  <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 128]} />
                 </div>
               </div>
 
