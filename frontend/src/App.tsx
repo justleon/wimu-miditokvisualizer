@@ -393,11 +393,11 @@ function App() {
           </div>
 
         </form>
-      <div>
-        <ErrorBoundary fallback={<p>Something went wrong</p>}>
-          {responseData?.data ? <DataDisplay data={responseData.data} sample={10}/> : responseData?.error}
-        </ErrorBoundary>
-      </div>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+          <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            {responseData?.data ? <DataDisplay data={responseData.data} sample={10} /> : responseData?.error}
+          </ErrorBoundary>
+        </div>
       </header>
     </div>
   );
