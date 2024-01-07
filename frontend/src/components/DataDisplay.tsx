@@ -15,28 +15,30 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ data, sample }) => {
     parentIndex: number[]
   ): React.ReactNode => {
     const slicedList = list.slice(0, n);
-
+  
     return (
       <>
         {slicedList.map((item, index) => {
           const currentIndex = [...parentIndex, index + 1];
           const heading = currentIndex.join('.');
-
+  
           return (
             <div key={index} style={{ display: 'flex', marginRight: '10px' }}>
-              <div>{heading}</div>
-              {Array.isArray(item) ? (
-                renderNestedList(item, n, level + 1, currentIndex)
-              ) : (
-                <PianoRollBlock key={index} item={item as Token} />
-              )}
-            </div>
+            {Array.isArray(item) ? (
+              <>
+                <div>{heading}</div>
+                {renderNestedList(item, n, level + 1, currentIndex)}
+              </>
+            ) : (
+              <PianoRollBlock key={index} item={item as Token} heading={heading} />
+            )}
+          </div>
           );
         })}
-        <br /> {/* Line break after each batch (each parent) */}
+        <br />
       </>
     );
-  };
+  };  
 
   if (!Array.isArray(data)) {
     return <div>Invalid data</div>;
