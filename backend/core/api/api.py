@@ -10,18 +10,10 @@ from core.api.model import ConfigModel
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-    "https://wimu-frontend-ccb0bbc023d3.herokuapp.com"
-]
+origins = ["http://localhost:3000", "https://wimu-frontend-ccb0bbc023d3.herokuapp.com"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
+    allow_headers=["*"])
 
 
 @app.exception_handler(RequestValidationError)
@@ -38,7 +30,9 @@ async def process(config: ConfigModel = Body(...), file: UploadFile = File(...))
         midi_bytes: bytes = await file.read()
         tokens: list = tokenize_midi_file(config, midi_bytes)
         serialized_tokens = json.dumps(tokens, cls=TokSequenceEncoder)
-        return JSONResponse(content={"success": True, "data": json.loads(serialized_tokens), "error": None})
+        return JSONResponse(
+            content={"success": True, "data": {"tokens": json.loads(serialized_tokens), "metrics": None},
+                     "error": None})
     except HTTPException as e:
         return JSONResponse(content={"success": False, "data": None, "error": str(e.detail)}, status_code=e.status_code)
     except Exception as e:

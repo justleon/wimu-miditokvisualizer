@@ -6,9 +6,14 @@ interface Token {
   desc: string;
 }
 
+interface DataStructure {
+  tokens: NestedList<Token>;
+  metrics: any
+}
+
 interface ApiResponse {
   success: boolean;
-  data: NestedList<Token>;
+  data: DataStructure
   error: string;
 }
 

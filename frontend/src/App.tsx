@@ -395,7 +395,7 @@ function App() {
         </form>
       <div>
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-          {responseData?.data ? <DataDisplay data={responseData.data} sample={10}/> : responseData?.error}
+          {responseData?.data?.tokens ? <DataDisplay data={responseData.data.tokens} sample={10}/> : responseData?.error}
         </ErrorBoundary>
       </div>
       </header>
