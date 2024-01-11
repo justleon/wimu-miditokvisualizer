@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #282d34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -40,10 +40,151 @@
 .form-row {
   margin-bottom: 10px;
   align-items: center;
-  font-size: 14px;
+  /* font-size: 20px; */
+}
+
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid #525c6a;
+  color: #525c6a;
+  background-color: #fff;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+button:hover {
+  background-color: #525c6a;
+  color: #fff;
 }
 
 button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
   background-color: #282c34;
   border: none;
+}
+
+.tokenizerConfigButton {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+select:hover,
+select:focus {
+  border-color: #525c6a;
+}
+
+select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+select:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}
+
+#tokenizerSelect {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row input[type="file"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-row input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.form-row input[type="text"]:hover,
+.form-row input[type="text"]:focus {
+  border-color: #525c6a;
+}
+
+.tokenizerConfig {
+  font-size: 16px;
+}
+
+.horizontal-slider {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  margin-left: 80px;
+}
+
+.example-thumb {
+  cursor: pointer;
+  position: absolute;
+  z-index: 100;
+  background: #ffffff;
+  border: 5px solid #3774ff;
+  border-radius: 100%;
+  display: block;
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 44%);
+}
+
+.example-thumb.active {
+  background-color: grey;
+}
+
+.example-track {
+  position: relative;
+  background: #ddd;
+}
+
+.example-track.example-track-0 {
+  background: #83a9ff;
+}
+
+.horizontal-slider .example-track {
+  top: 20px;
+  height: 4px;
+}
+
+.horizontal-slider .example-thumb {
+  top: 12px;
+  width: 10px;
+  outline: none;
+  height: 10px;
+  line-height: 50px;
 }
