@@ -68,11 +68,11 @@ class ConfigModel(BaseModel): # TODO: beat_res, beat_res_rest, chord_maps, chord
 
 class MusicInformationData(BaseModel):
     # Basic MIDI file information
-    title: string
+    title: str
     resolution: PositiveInt
-    tempos: list[(NonNegativeInt, float)]
-    key_signatures: list[(NonNegativeInt, NonNegativeInt, str)]
-    time_signatures: list[(NonNegativeInt, int, int)]
+    tempos: list[tuple[NonNegativeInt, float]]
+    key_signatures: list[tuple[NonNegativeInt, int, str]]
+    time_signatures: list[tuple[NonNegativeInt, int, int]]
 
     # Additional metrics retrieved from the MIDI file
     pitch_range: NonNegativeInt
@@ -86,11 +86,11 @@ class MusicInformationData(BaseModel):
 
 @dataclass
 class BasicInfoData:
-    title: string
+    title: str
     resolution: int
-    tempos: list[(int, float)]
-    key_signatures: list[(int, int, str)]
-    time_signatures: list[(int, int, int)]
+    tempos: list[tuple[int, float]]
+    key_signatures: list[tuple[int, int, str]]
+    time_signatures: list[tuple[int, int, int]]
 
 
 @dataclass

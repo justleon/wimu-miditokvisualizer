@@ -57,7 +57,28 @@ def create_music_info_data(basic_info: BasicInfoData, metrics_data: MetricsData)
 
 
 def retrieve_basic_information(music_file: muspy.Music) -> BasicInfoData:
-    pass
+    tempos = list[tuple[int, float]]()
+    for tempo in music_file.tempos:
+        tempo_data = (tempo.time, tempo.qpm)
+        tempos.append(tempo_data)
+
+    key_signatures = list[tuple[int, int, str]]()
+    for key_signature in music_file.key_signatures:
+        tempo_data = (key_signature.time, key_signature.root, key_signature.mode)
+        key_signatures.append(tempo_data)
+
+    time_signatures = list[tuple[int, int, int]]()
+    for time_signature in music_file.time_signatures:
+        tempo_data = (time_signature.time, time_signature.numerator, time_signature.denominator)
+        time_signatures.append(tempo_data)
+
+    return BasicInfoData(
+        music_file.metadata.title,
+        music_file.resolution,
+        tempos,
+        key_signatures,
+        time_signatures
+    )
 
 
 def retrieve_metrics(music_file: muspy.Music) -> MetricsData:
