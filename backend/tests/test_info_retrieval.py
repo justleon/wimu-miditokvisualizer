@@ -19,6 +19,9 @@ def test_retrieve_metrics():
 
 
 def test_retrieve_info():
-    music = retrieve_information_from_midi(EXAMPLE_MIDI_FILE_PATH)
+    music_obj = open(EXAMPLE_MIDI_FILE_PATH, 'rb')
+    music_obj_bytes: bytes = music_obj.read()
+
+    music = retrieve_information_from_midi(music_obj_bytes)
     assert music
     print(music)

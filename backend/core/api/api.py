@@ -1,12 +1,13 @@
-from fastapi import FastAPI, File, Form, UploadFile, HTTPException, Depends, Body
+import json
+
+from fastapi import FastAPI, File, UploadFile, HTTPException, Body
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import json
 
-from core.service.midi_processing import tokenize_midi_file
+from core.api.model import ConfigModel, MusicInformationData
+from core.service.midi_processing import tokenize_midi_file, retrieve_information_from_midi
 from core.service.serializer import TokSequenceEncoder
-from core.api.model import ConfigModel
 
 app = FastAPI()
 
@@ -30,6 +31,7 @@ async def process(config: ConfigModel = Body(...), file: UploadFile = File(...))
         midi_bytes: bytes = await file.read()
         tokens: list = tokenize_midi_file(config, midi_bytes)
         serialized_tokens = json.dumps(tokens, cls=TokSequenceEncoder)
+        metrics: MusicInformationData = retrieve_information_from_midi(midi_bytes)
         return JSONResponse(
             content={"success": True, "data": {"tokens": json.loads(serialized_tokens), "metrics": None},
                      "error": None})
