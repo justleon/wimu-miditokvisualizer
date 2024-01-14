@@ -192,7 +192,6 @@ function App() {
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <form onSubmit={handleUpload}>
           <div className="form-row">
-
             <label htmlFor="tokenizerSelect">Select Tokenizer Type: </label>
             <div>
               <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
@@ -208,12 +207,13 @@ function App() {
             </div>
           </div>
 
-          <button type="button" onClick={toggleTokenizerConfig}>
+          <button type="button" className="tokenizerConfigButton" onClick={toggleTokenizerConfig}>
             {showTokenizerConfig ? 'Hide Tokenizer Config' : 'Show Tokenizer Config'}
           </button>
 
           {showTokenizerConfig && (
             <>
+          <div className="tokenizerConfig">
           <div className="form-row">
             <div className="label-container">
               <label htmlFor="pitchRange">Select Pitch Range: </label>
@@ -381,8 +381,9 @@ function App() {
               Delete Equal Successive Time Signature Changes
             </label>
           </div>
-
+          </div>
           </>
+    
           )}
 
           <div className="form-row">
@@ -393,11 +394,11 @@ function App() {
           </div>
 
         </form>
-      <div>
-        <ErrorBoundary fallback={<p>Something went wrong</p>}>
-          {responseData?.data?.tokens ? <DataDisplay data={responseData.data.tokens} sample={10}/> : responseData?.error}
-        </ErrorBoundary>
-      </div>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+          <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            {responseData?.data ? <DataDisplay data={responseData.data} sample={10} /> : responseData?.error}
+          </ErrorBoundary>
+        </div>
       </header>
     </div>
   );
