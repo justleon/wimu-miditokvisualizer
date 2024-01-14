@@ -2,6 +2,7 @@ import math
 from io import BytesIO
 
 import muspy
+import pydantic
 from miditok import TokenizerConfig
 from miditoolkit import MidiFile
 from core.service.tokenizer_factory import TokenizerFactory
@@ -46,15 +47,30 @@ def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
 def retrieve_information_from_midi(midi_file_path: str):
     midi_file_music = muspy.read(midi_file_path)
 
-    retrieve_basic_data(midi_file_music)
-    retrieve_metrics(midi_file_music)
-    # music_info_data = create_music_info_data()
+    basic_data = retrieve_basic_data(midi_file_music)
+    metrics = retrieve_metrics(midi_file_music)
+    music_info_data = create_music_info_data(basic_data, metrics)
 
-    return midi_file_music
+    return music_info_data
 
 
 def create_music_info_data(basic_info: BasicInfoData, metrics_data: MetricsData) -> MusicInformationData:
-    pass
+    try:
+        data = MusicInformationData(
+            title=basic_info.title,
+            resolution=basic_info.resolution,
+            tempos=basic_info.tempos,
+            key_signatures=basic_info.key_signatures,
+            time_signatures=basic_info.time_signatures,
+            pitch_range=metrics_data.pitch_range,
+            n_pitches_used=metrics_data.n_pitches_used,
+            polyphony=metrics_data.polyphony,
+            empty_beat_rate=metrics_data.empty_beat_rate,
+            drum_pattern_consistency=metrics_data.drum_pattern_consistency
+        )
+        return data
+    except pydantic.ValidationError as e:
+        print(e)
 
 
 def retrieve_basic_data(music_file: muspy.Music) -> BasicInfoData:

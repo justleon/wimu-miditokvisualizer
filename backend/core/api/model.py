@@ -1,11 +1,10 @@
-import string
+import json
 from dataclasses import dataclass
+from typing import Literal, Optional
 
 from pydantic import (BaseModel, Field, model_validator,
                       NonNegativeInt, PositiveInt, NonNegativeFloat, StrictBool)
-from typing import Literal, Optional
 from typing_extensions import Annotated
-import json
 
 
 class ConfigModel(BaseModel): # TODO: beat_res, beat_res_rest, chord_maps, chord_tokens_with_root_note, chord_unknown, time_signature_range
@@ -80,7 +79,6 @@ class MusicInformationData(BaseModel):
     polyphony: NonNegativeFloat
 
     empty_beat_rate: NonNegativeFloat
-    drum_in_pattern_rate: NonNegativeFloat
     drum_pattern_consistency: NonNegativeFloat
 
 
