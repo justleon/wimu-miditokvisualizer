@@ -1,3 +1,4 @@
+import math
 from io import BytesIO
 
 import muspy
@@ -45,7 +46,7 @@ def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
 def retrieve_information_from_midi(midi_file_path: str):
     midi_file_music = muspy.read(midi_file_path)
 
-    retrieve_basic_information(midi_file_music)
+    retrieve_basic_data(midi_file_music)
     retrieve_metrics(midi_file_music)
     # music_info_data = create_music_info_data()
 
@@ -56,7 +57,7 @@ def create_music_info_data(basic_info: BasicInfoData, metrics_data: MetricsData)
     pass
 
 
-def retrieve_basic_information(music_file: muspy.Music) -> BasicInfoData:
+def retrieve_basic_data(music_file: muspy.Music) -> BasicInfoData:
     tempos = list[tuple[int, float]]()
     for tempo in music_file.tempos:
         tempo_data = (tempo.time, tempo.qpm)
@@ -82,4 +83,25 @@ def retrieve_basic_information(music_file: muspy.Music) -> BasicInfoData:
 
 
 def retrieve_metrics(music_file: muspy.Music) -> MetricsData:
-    pass
+    pitch_range = muspy.pitch_range(music_file)
+    n_pitches_used = muspy.n_pitches_used(music_file)
+
+    polyphony_rate = muspy.polyphony(music_file)
+    if math.isnan(polyphony_rate):
+        polyphony_rate = 0.0
+
+    empty_beat_rate = muspy.empty_beat_rate(music_file)
+    if math.isnan(empty_beat_rate):
+        empty_beat_rate = 0.0
+
+    drum_pattern_consistency = muspy.drum_pattern_consistency(music_file)
+    if math.isnan(drum_pattern_consistency):
+        drum_pattern_consistency = 0.0
+
+    return MetricsData(
+        pitch_range,
+        n_pitches_used,
+        polyphony_rate,
+        empty_beat_rate,
+        drum_pattern_consistency
+    )

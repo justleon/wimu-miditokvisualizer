@@ -97,8 +97,7 @@ class BasicInfoData:
 class MetricsData:
     pitch_range: int
     n_pitches_used: int
-    polyphony: int
+    polyphony: float
 
     empty_beat_rate: float
-    drum_in_pattern_rate: float
     drum_pattern_consistency: float
