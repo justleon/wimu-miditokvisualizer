@@ -1,8 +1,10 @@
 from io import BytesIO
+
+import muspy
 from miditok import TokenizerConfig
 from miditoolkit import MidiFile
 from core.service.tokenizer_factory import TokenizerFactory
-from core.api.model import ConfigModel
+from core.api.model import ConfigModel, MusicInformationData, BasicInfoData, MetricsData
 
 
 def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
@@ -38,3 +40,25 @@ def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
     midi = MidiFile(file=BytesIO(midi_bytes))
     tokens = tokenizer(midi)
     return tokens
+
+
+def retrieve_information_from_midi(midi_file_path: str):
+    midi_file_music = muspy.read(midi_file_path)
+
+    retrieve_basic_information(midi_file_music)
+    retrieve_metrics(midi_file_music)
+    # music_info_data = create_music_info_data()
+
+    return midi_file_music
+
+
+def create_music_info_data(basic_info: BasicInfoData, metrics_data: MetricsData) -> MusicInformationData:
+    pass
+
+
+def retrieve_basic_information(music_file: muspy.Music) -> BasicInfoData:
+    pass
+
+
+def retrieve_metrics(music_file: muspy.Music) -> MetricsData:
+    pass

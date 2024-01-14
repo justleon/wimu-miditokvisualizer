@@ -1,11 +1,8 @@
-import os
 import pytest
 from fastapi.testclient import TestClient
-from core.api.api import app, process
-from core.constants import DATA_DIR
 
-MIDI_FILE_NAME = "example.mid"
-MIDI_FILE_PATH = os.path.join(DATA_DIR, MIDI_FILE_NAME)
+from core.api.api import app
+from core.constants import EXAMPLE_MIDI_FILE_PATH
 
 client = TestClient(app)
 
@@ -20,7 +17,7 @@ def event_loop():
 
 @pytest.mark.asyncio
 async def test_upload_file():
-    with open(MIDI_FILE_PATH, "rb") as file:
+    with open(EXAMPLE_MIDI_FILE_PATH, "rb") as file:
         form_data = {"file": file}
         response = client.post("/process", files=form_data)
         assert response.status_code == 422

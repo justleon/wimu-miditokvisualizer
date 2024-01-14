@@ -1,4 +1,8 @@
-from pydantic import BaseModel, Field, model_validator, NonNegativeInt, StrictBool
+import string
+from dataclasses import dataclass
+
+from pydantic import (BaseModel, Field, model_validator,
+                      NonNegativeInt, PositiveInt, NonNegativeFloat, StrictBool)
 from typing import Literal, Optional
 from typing_extensions import Annotated
 import json
@@ -60,3 +64,41 @@ class ConfigModel(BaseModel): # TODO: beat_res, beat_res_rest, chord_maps, chord
         #         raise ValueError('max_program must be greater or equal to min_program')
 
         return values
+
+
+class MusicInformationData(BaseModel):
+    # Basic MIDI file information
+    title: string
+    resolution: PositiveInt
+    tempos: list[(NonNegativeInt, float)]
+    key_signatures: list[(NonNegativeInt, NonNegativeInt, str)]
+    time_signatures: list[(NonNegativeInt, int, int)]
+
+    # Additional metrics retrieved from the MIDI file
+    pitch_range: NonNegativeInt
+    n_pitches_used: NonNegativeInt
+    polyphony: NonNegativeFloat
+
+    empty_beat_rate: NonNegativeFloat
+    drum_in_pattern_rate: NonNegativeFloat
+    drum_pattern_consistency: NonNegativeFloat
+
+
+@dataclass
+class BasicInfoData:
+    title: string
+    resolution: int
+    tempos: list[(int, float)]
+    key_signatures: list[(int, int, str)]
+    time_signatures: list[(int, int, int)]
+
+
+@dataclass
+class MetricsData:
+    pitch_range: int
+    n_pitches_used: int
+    polyphony: int
+
+    empty_beat_rate: float
+    drum_in_pattern_rate: float
+    drum_pattern_consistency: float
