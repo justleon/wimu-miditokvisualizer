@@ -34,4 +34,4 @@ interface ApiResponse {
 
 type NestedList<T> = Array<T | NestedList<T>>;
 
-export type { Token, ApiResponse, NestedList };
+export type { Token, ApiResponse, NestedList, MusicInfoData };

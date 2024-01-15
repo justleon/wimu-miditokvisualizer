@@ -35,7 +35,7 @@ async def process(config: ConfigModel = Body(...), file: UploadFile = File(...))
         return JSONResponse(
             content={"success": True,
                      "data": {"tokens": json.loads(serialized_tokens),
-                              "metrics": metrics.model_dump_json()},
+                              "metrics": json.loads(metrics.model_dump_json())},
                      "error": None}
         )
     except HTTPException as e:

@@ -4,6 +4,7 @@ import './App.css';
 import FileUpload from './components/FileUpload';
 import Spinner from './components/Spinner';
 import DataDisplay from './components/DataDisplay';
+import MusicInfoDisplay from './components/MusicInfoDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
@@ -394,6 +395,11 @@ function App() {
           </div>
 
         </form>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+          <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
+          </ErrorBoundary>
+        </div>
         <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '70%' }}>
           <ErrorBoundary fallback={<p>Something went wrong</p>}>
             {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
