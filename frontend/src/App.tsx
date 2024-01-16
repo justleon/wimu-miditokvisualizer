@@ -197,13 +197,11 @@ function App() {
             <div>
               <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
                 <option value="REMI">REMI</option>
-                <option value="REMIPlus">REMIPlus</option>
                 <option value="MIDILike">MIDI-like</option>
                 <option value="TSD">TSD</option>
                 <option value="Structured">Structured</option>
                 <option value="CPWord">CPWord</option>
                 <option value="Octuple">Octuple</option>
-                <option value="MMM">MMM</option>
               </select>
             </div>
           </div>
@@ -285,12 +283,18 @@ function App() {
             </label>
           </div>
 
-          <div className="form-row">
-            <label>
-              <input type="checkbox" checked={usePrograms} onChange={handleUseProgramsChange} />
-              Use Programs
-            </label>
-          </div>
+          {selectedTokenizer === 'TSD' ||
+          selectedTokenizer === 'REMI' ||
+          selectedTokenizer === 'MIDILike' ||
+          selectedTokenizer === 'Structured' ||
+          selectedTokenizer === 'CPWord' ? (
+            <div className="form-row">
+              <label>
+                <input type="checkbox" checked={usePrograms} onChange={handleUseProgramsChange} />
+                Use Programs
+              </label>
+            </div>
+          ) : null}
 
           {usePrograms && (
             <>
@@ -310,12 +314,14 @@ function App() {
                 </label>
               </div>
 
-              <div className="form-row">
-                <label>
-                  <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
-                  Program Changes
-                </label>
-              </div>
+              {selectedTokenizer === 'REMI' || selectedTokenizer === 'TSD' || selectedTokenizer === 'MIDILike' ? (
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
+                    Program Changes
+                  </label>
+                </div>
+              ) : null}
             </>
           )}
 
@@ -344,12 +350,30 @@ function App() {
             </label>
           </div>
 
-          <div className="form-row">
-            <label>
-              <input type="checkbox" checked={deleteEqualSuccessiveTempoChanges} onChange={handleDeleteEqualSuccessiveTempoChangesChange} />
-              Delete Equal Successive Tempo Changes
-            </label>
-          </div>
+          {selectedTokenizer !== 'Octuple' ? (
+            <>
+              <div className="form-row">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={deleteEqualSuccessiveTempoChanges}
+                    onChange={handleDeleteEqualSuccessiveTempoChangesChange}
+                  />
+                  Delete Equal Successive Tempo Changes
+                </label>
+              </div>
+              <div className="form-row">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={deleteEqualSuccessiveTimeSigChanges}
+                    onChange={handleDeleteEqualSuccessiveTimeSigChangesChange}
+                  />
+                  Delete Equal Successive Time Signature Changes
+                </label>
+              </div>
+            </>
+          ) : null}
 
           <div className="form-row">
             <label>
@@ -376,12 +400,6 @@ function App() {
             </div>
           </div>
 
-          <div className="form-row">
-            <label>
-              <input type="checkbox" checked={deleteEqualSuccessiveTimeSigChanges} onChange={handleDeleteEqualSuccessiveTimeSigChangesChange} />
-              Delete Equal Successive Time Signature Changes
-            </label>
-          </div>
           </div>
           </>
     
