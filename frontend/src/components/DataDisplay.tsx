@@ -22,7 +22,7 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ data }) => {
             <div key={index} style={{ display: 'flex', marginRight: '10px' }}>
             {Array.isArray(item) ? (
               <>
-                <div>{heading}</div>
+                <div style={{marginRight: '5px'}}>{heading}</div>
                 {renderNestedList(item, level + 1, currentIndex)}
               </>
             ) : (

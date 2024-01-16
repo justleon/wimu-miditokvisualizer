@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import FileUpload from './components/FileUpload';
 import Spinner from './components/Spinner';
@@ -172,9 +171,6 @@ function App() {
         body: formData,
       })
         .then((response) => {
-          // if (!response.ok) {
-          //   throw new Error(`${response.status} ${response.statusText}`);
-          // }
           return response.json();
         })
         .then((data: ApiResponse) => setResponseData(data))
@@ -190,7 +186,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <form onSubmit={handleUpload}>
           <div className="form-row">
             <label htmlFor="tokenizerSelect">Select Tokenizer Type: </label>
@@ -413,12 +408,12 @@ function App() {
           </div>
 
         </form>
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <ErrorBoundary fallback={<p>Something went wrong</p>}>
             {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
           </ErrorBoundary>
         </div>
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '75%' }}>
           <ErrorBoundary fallback={<p>Something went wrong</p>}>
             {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
           </ErrorBoundary>
