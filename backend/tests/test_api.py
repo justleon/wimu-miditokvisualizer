@@ -10,6 +10,7 @@ client = TestClient(app)
 @pytest.fixture
 def event_loop():
     import asyncio
+
     loop = asyncio.get_event_loop()
     yield loop
     loop.close()

@@ -1,11 +1,11 @@
 import pytest
 from miditok import TokenizerConfig
+
 from core.service.tokenizer_factory import TokenizerFactory
 
 
 def test_get_tokenizer():
-    tokenizers_list = ["REMI", "REMIPlus", "MIDILike", "TSD",
-                       "Structured", "CPWord", "Octuple", "MuMIDI", "MMM"]
+    tokenizers_list = ["REMI", "REMIPlus", "MIDILike", "TSD", "Structured", "CPWord", "Octuple", "MuMIDI", "MMM"]
 
     for tokenizer in tokenizers_list:
         try:

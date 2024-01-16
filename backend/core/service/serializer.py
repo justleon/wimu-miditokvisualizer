@@ -1,9 +1,10 @@
 import json
-from miditok import TokSequence, Event
+
 import numpy as np
+from miditok import Event, TokSequence
 
 
-def get_serialized_tokens(tokens: list[TokSequence]):
+def get_serialized_tokens(tokens: list[TokSequence]) -> str:
     return json.dumps(tokens, cls=TokSequenceEncoder)
 
 

@@ -1,10 +1,20 @@
-import string
-from miditok import (TokenizerConfig, MIDITokenizer, REMI, REMIPlus, MIDILike,
-                     TSD, Structured, CPWord, Octuple, MuMIDI, MMM)
+from miditok import (
+    MMM,
+    REMI,
+    TSD,
+    CPWord,
+    MIDILike,
+    MIDITokenizer,
+    MuMIDI,
+    Octuple,
+    REMIPlus,
+    Structured,
+    TokenizerConfig,
+)
 
 
 class TokenizerFactory:
-    def get_tokenizer(self, tokenizer_type: string, config: TokenizerConfig) -> MIDITokenizer:
+    def get_tokenizer(self, tokenizer_type: str, config: TokenizerConfig) -> MIDITokenizer:
         match tokenizer_type:
             case "REMI":
                 return REMI(config)
