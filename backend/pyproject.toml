@@ -34,7 +34,7 @@ line-length = 119
 fmt = false
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 mypy_path = "core/"
 disallow_incomplete_defs = true
 warn_redundant_casts = true
@@ -43,8 +43,6 @@ no_implicit_reexport = true
 strict_equality = true
 namespace_packages = true
 check_untyped_defs = true
-
-[[tool.mypy.overrides]]
 ignore_missing_imports = true
 
 [tool.ruff]

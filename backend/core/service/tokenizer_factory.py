@@ -1,5 +1,3 @@
-import string
-
 from miditok import (
     MMM,
     REMI,
@@ -16,7 +14,7 @@ from miditok import (
 
 
 class TokenizerFactory:
-    def get_tokenizer(self, tokenizer_type: string, config: TokenizerConfig) -> MIDITokenizer:
+    def get_tokenizer(self, tokenizer_type: str, config: TokenizerConfig) -> MIDITokenizer:
         match tokenizer_type:
             case "REMI":
                 return REMI(config)

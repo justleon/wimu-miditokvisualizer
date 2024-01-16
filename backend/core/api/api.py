@@ -1,5 +1,6 @@
 import json
 import logging.config
+from typing import List
 
 from fastapi import Body, FastAPI, File, HTTPException, UploadFile
 from fastapi.exceptions import RequestValidationError
@@ -32,12 +33,12 @@ async def validation_exception_handler(request, exc):
 
 
 @app.post("/process")
-async def process(config: ConfigModel = Body(...), file: UploadFile = File(...)):
+async def process(config: ConfigModel = Body(...), file: UploadFile = File(...)) -> JSONResponse:
     try:
         if file.content_type not in ["audio/mid", "audio/midi", "audio/x-mid", "audio/x-midi"]:
             raise HTTPException(status_code=415, detail="Unsupported file type")
         midi_bytes: bytes = await file.read()
-        tokens: list = tokenize_midi_file(config, midi_bytes)
+        tokens: List = tokenize_midi_file(config, midi_bytes)
         serialized_tokens = json.dumps(tokens, cls=TokSequenceEncoder)
         metrics: MusicInformationData = retrieve_information_from_midi(midi_bytes)
         return JSONResponse(

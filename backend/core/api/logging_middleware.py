@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Tuple
 from uuid import uuid4
 
 from fastapi import FastAPI, Request, Response
@@ -15,7 +15,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         request_id: str = str(uuid4())
 
-        logging_dict = {"X-API-REQUEST-ID": request_id}
+        logging_dict: Dict[str, Any] = {"X-API-REQUEST-ID": request_id}
 
         response, response_dict = await self._log_response(call_next, request, request_id)
 
@@ -27,18 +27,22 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         return response
 
-    async def _log_request(self, request: Request) -> Dict[str, str]:
+    async def _log_request(self, request: Request) -> Dict[str, Any]:
         path = request.url.path
         if request.query_params:
             path += f"?{request.query_params}"
 
-        request_logging = {"method": request.method, "path": path, "ip": request.client.host}
+        request_logging = {
+            "method": request.method,
+            "path": path,
+            "ip": request.client.host if request.client is not None else None,
+        }
 
         return request_logging
 
     async def _log_response(
         self, call_next: Callable, request: Request, request_id: str
-    ) -> Tuple[Response, Dict[str, str]]:
+    ) -> Tuple[Response, Dict[str, Any]]:
         start_time = time.perf_counter()
         response: Response = await self._execute_request(call_next, request, request_id)
         finish_time = time.perf_counter()

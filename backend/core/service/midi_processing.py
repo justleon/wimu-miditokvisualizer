@@ -1,5 +1,6 @@
 import math
 from io import BytesIO
+from typing import List, Tuple
 
 import muspy
 import pydantic
@@ -11,7 +12,7 @@ from core.api.model import BasicInfoData, ConfigModel, MetricsData, MusicInforma
 from core.service.tokenizer_factory import TokenizerFactory
 
 
-def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
+def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes) -> List:
     tokenizer_params = {
         "pitch_range": tuple(user_config.pitch_range),
         "beat_res": {(0, 4): 8, (4, 12): 4},
@@ -46,7 +47,7 @@ def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
     return tokens
 
 
-def retrieve_information_from_midi(midi_bytes: bytes):
+def retrieve_information_from_midi(midi_bytes: bytes) -> MusicInformationData:
     midi = MidoMidiFile(file=BytesIO(midi_bytes))
     midi_file_music = muspy.from_mido(midi)
 
@@ -77,20 +78,20 @@ def create_music_info_data(basic_info: BasicInfoData, metrics_data: MetricsData)
 
 
 def retrieve_basic_data(music_file: muspy.Music) -> BasicInfoData:
-    tempos = list[tuple[int, float]]()
+    tempos: List[Tuple[int, float]] = []
     for tempo in music_file.tempos:
-        tempo_data = (tempo.time, tempo.qpm)
+        tempo_data: Tuple[int, float] = (tempo.time, tempo.qpm)
         tempos.append(tempo_data)
 
-    key_signatures = list[tuple[int, int, str]]()
+    key_signatures: List[Tuple[int, int, str]] = []
     for key_signature in music_file.key_signatures:
-        tempo_data = (key_signature.time, key_signature.root, key_signature.mode)
-        key_signatures.append(tempo_data)
+        signature_data: Tuple[int, int, str] = (key_signature.time, key_signature.root, key_signature.mode)
+        key_signatures.append(signature_data)
 
-    time_signatures = list[tuple[int, int, int]]()
+    time_signatures: List[Tuple[int, int, int]] = []
     for time_signature in music_file.time_signatures:
-        tempo_data = (time_signature.time, time_signature.numerator, time_signature.denominator)
-        time_signatures.append(tempo_data)
+        time_data: Tuple[int, int, int] = (time_signature.time, time_signature.numerator, time_signature.denominator)
+        time_signatures.append(time_data)
 
     return BasicInfoData(music_file.metadata.title, music_file.resolution, tempos, key_signatures, time_signatures)
 
