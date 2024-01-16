@@ -23,6 +23,7 @@ const MusicInfoDisplay: React.FC<TableDisplayProps> = ({ data }) => {
                         border: '1px solid #ccc',
                         margin: '5px',
                         position: 'relative',
+                        backgroundColor: '#4e4e4e'
                     }}
                     >
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
@@ -49,6 +50,7 @@ const MusicInfoDisplay: React.FC<TableDisplayProps> = ({ data }) => {
                         border: '1px solid #ccc',
                         margin: '5px',
                         position: 'relative',
+                        backgroundColor: '#4e4e4e'
                     }}
                     >
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
@@ -75,6 +77,7 @@ const MusicInfoDisplay: React.FC<TableDisplayProps> = ({ data }) => {
                         border: '1px solid #ccc',
                         margin: '5px',
                         position: 'relative',
+                        backgroundColor: '#4e4e4e'
                     }}
                     >
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
@@ -100,6 +103,7 @@ const MusicInfoDisplay: React.FC<TableDisplayProps> = ({ data }) => {
                 border: '1px solid #ccc',
                 margin: '5px',
                 position: 'relative',
+                backgroundColor: '#4e4e4e'
             }}>
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                     {(
