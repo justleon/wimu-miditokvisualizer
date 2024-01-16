@@ -1,16 +1,15 @@
 import json
+import logging.config
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, Body
+from fastapi import Body, FastAPI, File, HTTPException, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
 from core.api.logging_middleware import LoggingMiddleware, log_config
-
 from core.api.model import ConfigModel, MusicInformationData
-from core.service.midi_processing import tokenize_midi_file, retrieve_information_from_midi
+from core.service.midi_processing import retrieve_information_from_midi, tokenize_midi_file
 from core.service.serializer import TokSequenceEncoder
-import logging.config
-
 
 logging.config.dictConfig(log_config)
 

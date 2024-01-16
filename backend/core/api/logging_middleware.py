@@ -1,10 +1,10 @@
-from starlette.middleware.base import BaseHTTPMiddleware
-import time
-from uuid import uuid4
-from typing import Callable, Dict, Tuple
-from fastapi import FastAPI, Body, Request, Response
 import logging
-from logging import handlers
+import time
+from typing import Callable, Dict, Tuple
+from uuid import uuid4
+
+from fastapi import FastAPI, Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):

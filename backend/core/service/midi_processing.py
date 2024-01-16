@@ -1,14 +1,14 @@
 import math
 from io import BytesIO
 
-import mido
 import muspy
 import pydantic
 from miditok import TokenizerConfig
 from miditoolkit import MidiFile
 from mido import MidiFile as MidoMidiFile
+
+from core.api.model import BasicInfoData, ConfigModel, MetricsData, MusicInformationData
 from core.service.tokenizer_factory import TokenizerFactory
-from core.api.model import ConfigModel, MusicInformationData, BasicInfoData, MetricsData
 
 
 def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes):
@@ -69,7 +69,7 @@ def create_music_info_data(basic_info: BasicInfoData, metrics_data: MetricsData)
             n_pitches_used=metrics_data.n_pitches_used,
             polyphony=metrics_data.polyphony,
             empty_beat_rate=metrics_data.empty_beat_rate,
-            drum_pattern_consistency=metrics_data.drum_pattern_consistency
+            drum_pattern_consistency=metrics_data.drum_pattern_consistency,
         )
         return data
     except pydantic.ValidationError as e:
@@ -92,13 +92,7 @@ def retrieve_basic_data(music_file: muspy.Music) -> BasicInfoData:
         tempo_data = (time_signature.time, time_signature.numerator, time_signature.denominator)
         time_signatures.append(tempo_data)
 
-    return BasicInfoData(
-        music_file.metadata.title,
-        music_file.resolution,
-        tempos,
-        key_signatures,
-        time_signatures
-    )
+    return BasicInfoData(music_file.metadata.title, music_file.resolution, tempos, key_signatures, time_signatures)
 
 
 def retrieve_metrics(music_file: muspy.Music) -> MetricsData:
@@ -117,10 +111,4 @@ def retrieve_metrics(music_file: muspy.Music) -> MetricsData:
     if math.isnan(drum_pattern_consistency):
         drum_pattern_consistency = 0.0
 
-    return MetricsData(
-        pitch_range,
-        n_pitches_used,
-        polyphony_rate,
-        empty_beat_rate,
-        drum_pattern_consistency
-    )
+    return MetricsData(pitch_range, n_pitches_used, polyphony_rate, empty_beat_rate, drum_pattern_consistency)

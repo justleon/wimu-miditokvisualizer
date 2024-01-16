@@ -1,7 +1,7 @@
 import muspy
 
 from core.constants import EXAMPLE_MIDI_FILE_PATH
-from core.service.midi_processing import retrieve_information_from_midi, retrieve_basic_data, retrieve_metrics
+from core.service.midi_processing import retrieve_basic_data, retrieve_information_from_midi, retrieve_metrics
 
 
 def test_retrieve_basic_info():
@@ -19,7 +19,7 @@ def test_retrieve_metrics():
 
 
 def test_retrieve_info():
-    music_obj = open(EXAMPLE_MIDI_FILE_PATH, 'rb')
+    music_obj = open(EXAMPLE_MIDI_FILE_PATH, "rb")
     music_obj_bytes: bytes = music_obj.read()
 
     music = retrieve_information_from_midi(music_obj_bytes)

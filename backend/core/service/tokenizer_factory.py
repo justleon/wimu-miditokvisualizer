@@ -1,6 +1,18 @@
 import string
-from miditok import (TokenizerConfig, MIDITokenizer, REMI, REMIPlus, MIDILike,
-                     TSD, Structured, CPWord, Octuple, MuMIDI, MMM)
+
+from miditok import (
+    MMM,
+    REMI,
+    TSD,
+    CPWord,
+    MIDILike,
+    MIDITokenizer,
+    MuMIDI,
+    Octuple,
+    REMIPlus,
+    Structured,
+    TokenizerConfig,
+)
 
 
 class TokenizerFactory:
