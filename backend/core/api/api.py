@@ -4,10 +4,16 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Body
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from core.api.logging_middleware import LoggingMiddleware
 
 from core.api.model import ConfigModel, MusicInformationData
 from core.service.midi_processing import tokenize_midi_file, retrieve_information_from_midi
 from core.service.serializer import TokSequenceEncoder
+import logging
+
+
+
+logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
 
 app = FastAPI()
 
@@ -15,6 +21,12 @@ origins = ["http://localhost:3000", "https://wimu-frontend-ccb0bbc023d3.herokuap
 
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
                    allow_headers=["*"])
+
+app.add_middleware(
+    LoggingMiddleware,
+    logger=logging.getLogger(__name__)
+)
+
 
 
 @app.exception_handler(RequestValidationError)
