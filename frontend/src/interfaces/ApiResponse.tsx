@@ -6,12 +6,32 @@ interface Token {
   desc: string;
 }
 
+interface MusicInfoData {
+  title: string;
+  resolution: number;
+  tempos: Array<[number, number]>;
+  key_signatures: Array<[number, number, string]>;
+  time_signatures: Array<[number, number, number]>;
+  
+  pitch_range: number;
+  n_pitches_used: number;
+  polyphony: number;
+
+  empty_beat_rate: number;
+  drum_pattern_consistency: number;
+}
+
+interface DataStructure {
+  tokens: NestedList<Token>;
+  metrics: MusicInfoData;
+}
+
 interface ApiResponse {
   success: boolean;
-  data: NestedList<Token>;
+  data: DataStructure;
   error: string;
 }
 
 type NestedList<T> = Array<T | NestedList<T>>;
 
-export type { Token, ApiResponse, NestedList };
+export type { Token, ApiResponse, NestedList, MusicInfoData };
