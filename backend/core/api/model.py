@@ -1,7 +1,10 @@
-from pydantic import BaseModel, Field, model_validator, NonNegativeInt, StrictBool
-from typing import Literal, Optional
-from typing_extensions import Annotated
 import json
+from dataclasses import dataclass
+from typing import Literal, Optional
+
+from pydantic import (BaseModel, Field, model_validator,
+                      NonNegativeInt, PositiveInt, NonNegativeFloat, StrictBool)
+from typing_extensions import Annotated
 
 
 class ConfigModel(BaseModel): # TODO: beat_res, beat_res_rest, chord_maps, chord_tokens_with_root_note, chord_unknown, time_signature_range
@@ -60,3 +63,39 @@ class ConfigModel(BaseModel): # TODO: beat_res, beat_res_rest, chord_maps, chord
         #         raise ValueError('max_program must be greater or equal to min_program')
 
         return values
+
+
+class MusicInformationData(BaseModel):
+    # Basic MIDI file information
+    title: str
+    resolution: PositiveInt
+    tempos: list[tuple[NonNegativeInt, float]]
+    key_signatures: list[tuple[NonNegativeInt, int, str]]
+    time_signatures: list[tuple[NonNegativeInt, int, int]]
+
+    # Additional metrics retrieved from the MIDI file
+    pitch_range: NonNegativeInt
+    n_pitches_used: NonNegativeInt
+    polyphony: NonNegativeFloat
+
+    empty_beat_rate: NonNegativeFloat
+    drum_pattern_consistency: NonNegativeFloat
+
+
+@dataclass
+class BasicInfoData:
+    title: str
+    resolution: int
+    tempos: list[tuple[int, float]]
+    key_signatures: list[tuple[int, int, str]]
+    time_signatures: list[tuple[int, int, int]]
+
+
+@dataclass
+class MetricsData:
+    pitch_range: int
+    n_pitches_used: int
+    polyphony: float
+
+    empty_beat_rate: float
+    drum_pattern_consistency: float

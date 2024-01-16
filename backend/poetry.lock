@@ -32,6 +32,22 @@ test = ["anyio[trio]", "coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "mock (>=
 trio = ["trio (<0.22)"]
 
 [[package]]
+name = "bidict"
+version = "0.22.1"
+description = "The bidirectional mapping library for Python."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "bidict-0.22.1-py3-none-any.whl", hash = "sha256:6ef212238eb884b664f28da76f33f1d28b260f665fc737b413b287d5487d1e7b"},
+    {file = "bidict-0.22.1.tar.gz", hash = "sha256:1e0f7f74e4860e6d0943a05d4134c63a2fad86f3d4732fb265bd79e4e856d81d"},
+]
+
+[package.extras]
+docs = ["furo", "sphinx", "sphinx-copybutton"]
+lint = ["pre-commit"]
+test = ["hypothesis", "pytest", "pytest-benchmark[histogram]", "pytest-cov", "pytest-xdist", "sortedcollections", "sortedcontainers", "sphinx"]
+
+[[package]]
 name = "black"
 version = "23.12.1"
 description = "The uncompromising code formatter."
@@ -85,6 +101,16 @@ files = [
     {file = "certifi-2023.7.22-py3-none-any.whl", hash = "sha256:92d6037539857d8206b8f6ae472e8b77db8058fec5937a1ef3f54304089edbb9"},
     {file = "certifi-2023.7.22.tar.gz", hash = "sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082"},
 ]
+
+[[package]]
+name = "chardet"
+version = "5.2.0"
+description = "Universal encoding detector for Python 3"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970"},
+    {file = "chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7"},
 
 [[package]]
 name = "cfgv"
@@ -572,6 +598,33 @@ files = [
 ]
 
 [[package]]
+name = "joblib"
+version = "1.3.2"
+description = "Lightweight pipelining with Python functions"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "joblib-1.3.2-py3-none-any.whl", hash = "sha256:ef4331c65f239985f3f2220ecc87db222f08fd22097a3dd5698f693875f8cbb9"},
+    {file = "joblib-1.3.2.tar.gz", hash = "sha256:92f865e621e17784e7955080b6d042489e3b8e294949cc44c6eac304f59772b1"},
+]
+
+[[package]]
+name = "jsonpickle"
+version = "3.0.2"
+description = "Python library for serializing any arbitrary object graph into JSON"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "jsonpickle-3.0.2-py3-none-any.whl", hash = "sha256:4a8442d97ca3f77978afa58068768dba7bff2dbabe79a9647bc3cdafd4ef019f"},
+    {file = "jsonpickle-3.0.2.tar.gz", hash = "sha256:e37abba4bfb3ca4a4647d28bb9f4706436f7b46c8a8333b4a718abafa8e46b37"},
+]
+
+[package.extras]
+docs = ["jaraco.packaging (>=3.2)", "rst.linker (>=1.9)", "sphinx"]
+testing = ["ecdsa", "feedparser", "gmpy2", "numpy", "pandas", "pymongo", "pytest (>=3.5,!=3.7.3)", "pytest-black-multipy", "pytest-checkdocs (>=1.2.3)", "pytest-cov", "pytest-flake8 (>=1.1.1)", "scikit-learn", "sqlalchemy"]
+testing-libs = ["simplejson", "ujson"]
+
+[[package]]
 name = "isort"
 version = "5.13.2"
 description = "A Python utility / library to sort Python imports."
@@ -784,13 +837,13 @@ numpy = ">=1.7.0"
 
 [[package]]
 name = "mido"
-version = "1.3.0"
+version = "1.3.2"
 description = "MIDI Objects for Python"
 optional = false
 python-versions = "~=3.7"
 files = [
-    {file = "mido-1.3.0-py3-none-any.whl", hash = "sha256:a710a274c8a1a3fd481f526d174a16e117b5e58d719ad92937a67fb6167a9432"},
-    {file = "mido-1.3.0.tar.gz", hash = "sha256:84282e3ace34bca3f984220db2dbcb98245cfeafb854260c02e000750dca86aa"},
+    {file = "mido-1.3.2-py3-none-any.whl", hash = "sha256:9f5668d2eae78e43d54f4c651f8bf41a614eb23f98ce5179d3ddd984bf19eb58"},
+    {file = "mido-1.3.2.tar.gz", hash = "sha256:3aea28b6ed730f737d5b12da3578debe9dc50058fa370fe9ceded9189b67c348"},
 ]
 
 [package.dependencies]
@@ -799,8 +852,8 @@ packaging = ">=23.1,<24.0"
 [package.extras]
 build-docs = ["sphinx (>=4.3.2,<4.4.0)", "sphinx-rtd-theme (>=1.2.2,<1.3.0)"]
 check-manifest = ["check-manifest (>=0.49)"]
-dev = ["mido[build-docs]", "mido[check-manifest]", "mido[lint-code]", "mido[lint-reuse]", "mido[release]", "mido[test]"]
-lint-code = ["flake8 (>=5.0.4,<5.1.0)"]
+dev = ["mido[build-docs]", "mido[check-manifest]", "mido[lint-code]", "mido[lint-reuse]", "mido[release]", "mido[test-code]"]
+lint-code = ["ruff (>=0.1.6,<0.2.0)"]
 lint-reuse = ["reuse (>=1.1.2,<1.2.0)"]
 ports-all = ["mido[ports-pygame]", "mido[ports-rtmidi-python]", "mido[ports-rtmidi]"]
 ports-pygame = ["PyGame (>=2.5,<3.0)"]
@@ -808,6 +861,68 @@ ports-rtmidi = ["python-rtmidi (>=1.5.4,<1.6.0)"]
 ports-rtmidi-python = ["rtmidi-python (>=0.2.2,<0.3.0)"]
 release = ["twine (>=4.0.2,<4.1.0)"]
 test-code = ["pytest (>=7.4.0,<7.5.0)"]
+
+[[package]]
+name = "more-itertools"
+version = "10.2.0"
+description = "More routines for operating on iterables, beyond itertools"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "more-itertools-10.2.0.tar.gz", hash = "sha256:8fccb480c43d3e99a00087634c06dd02b0d50fbf088b380de5a41a015ec239e1"},
+    {file = "more_itertools-10.2.0-py3-none-any.whl", hash = "sha256:686b06abe565edfab151cb8fd385a05651e1fdf8f0a14191e4439283421f8684"},
+]
+
+[[package]]
+name = "music21"
+version = "9.1.0"
+description = "A Toolkit for Computer-Aided Musical Analysis and Computational Musicology."
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "music21-9.1.0-py3-none-any.whl", hash = "sha256:f3d312159be73867bd86fb0b6f201fc7285e5f6886d6f0c0a115eeeff0e67741"},
+    {file = "music21-9.1.0.tar.gz", hash = "sha256:6c61425c7af5bf54e120afebabcffdb22be32620b0ea22b0d8e36ac5eafaefc8"},
+]
+
+[package.dependencies]
+chardet = "*"
+joblib = "*"
+jsonpickle = "*"
+matplotlib = "*"
+more-itertools = "*"
+numpy = "*"
+requests = "*"
+webcolors = ">=1.5"
+
+[[package]]
+name = "muspy"
+version = "0.5.0"
+description = "A toolkit for symbolic music generation"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "muspy-0.5.0-py3-none-any.whl", hash = "sha256:6f0e614476f92f5a573755117a959b660f120ca2838f05f88e8422ec2744d4fd"},
+    {file = "muspy-0.5.0.tar.gz", hash = "sha256:35b9ed102d83040968a95604505b3e47ee165e05f112a215dfa22a75ffae8f6c"},
+]
+
+[package.dependencies]
+bidict = ">=0.21"
+joblib = ">=0.15"
+matplotlib = ">=1.5"
+miditoolkit = ">=0.1"
+mido = ">=1.0"
+music21 = ">=6.0"
+pretty-midi = ">=0.2"
+pypianoroll = ">=1.0"
+PyYAML = ">=3.0"
+requests = ">=2.0"
+tqdm = ">=4.0"
+
+[package.extras]
+dev = ["black (>=19.0)", "flake8 (>=3.8)", "flake8-docstrings (>=1.5)", "mypy (>=0.900)", "pylint (>=2.5)", "sphinx (>=3.0)", "sphinx-rtd-theme (>=0.5)"]
+optional = ["tensorflow (>=2.0)", "torch (>=1.0)"]
+schema = ["jsonschema (>=3.0)", "xmlschema (>=1.0)", "yamale (>=2.0)"]
+test = ["pytest (>=6.0)", "pytest-cov (>=2.0)"]
 
 [[package]]
 name = "mypy"
@@ -1037,6 +1152,21 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "pretty-midi"
+version = "0.2.10"
+description = "Functions and classes for handling MIDI data conveniently."
+optional = false
+python-versions = "*"
+files = [
+    {file = "pretty_midi-0.2.10.tar.gz", hash = "sha256:ea6e192f94044674e833336ea1f415318ddf28e320302ac7b109edff0d4534bd"},
+]
+
+[package.dependencies]
+mido = ">=1.1.16"
+numpy = ">=1.7.0"
+six = "*"
+
+[[package]]
 name = "pre-commit"
 version = "3.6.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -1204,6 +1334,26 @@ files = [
 
 [package.extras]
 diagrams = ["jinja2", "railroad-diagrams"]
+
+[[package]]
+name = "pypianoroll"
+version = "1.0.4"
+description = "A toolkit for working with piano rolls"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pypianoroll-1.0.4-py3-none-any.whl", hash = "sha256:39bf5814567ea5a0679e7706e6f4fbffa17be89cadd54b27e61aa9f3574bb793"},
+    {file = "pypianoroll-1.0.4.tar.gz", hash = "sha256:8708783afc88806b1259628ed9e32597c448a0f9c2b30b7a6ec4399682eba46f"},
+]
+
+[package.dependencies]
+matplotlib = ">=1.5"
+numpy = ">=1.12.0"
+pretty-midi = ">=0.2.8"
+scipy = ">=1.0.0"
+
+[package.extras]
+test = ["pytest (>=6.0)", "pytest-cov (>=2.0)"]
 
 [[package]]
 name = "pytest"
@@ -1593,6 +1743,21 @@ h11 = ">=0.8"
 
 [package.extras]
 standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.4)"]
+
+[[package]]
+name = "webcolors"
+version = "1.13"
+description = "A library for working with the color formats defined by HTML and CSS."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "webcolors-1.13-py3-none-any.whl", hash = "sha256:29bc7e8752c0a1bd4a1f03c14d6e6a72e93d82193738fa860cbff59d0fcc11bf"},
+    {file = "webcolors-1.13.tar.gz", hash = "sha256:c225b674c83fa923be93d235330ce0300373d02885cef23238813b0d5668304a"},
+]
+
+[package.extras]
+docs = ["furo", "sphinx", "sphinx-copybutton", "sphinx-inline-tabs", "sphinx-notfound-page", "sphinxext-opengraph"]
+tests = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "virtualenv"

@@ -1,19 +1,20 @@
-from fastapi import FastAPI, File, Form, UploadFile, HTTPException, Depends, Body
+import json
+
+from fastapi import FastAPI, File, UploadFile, HTTPException, Body
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import json
 
-from core.service.midi_processing import tokenize_midi_file
+from core.api.model import ConfigModel, MusicInformationData
+from core.service.midi_processing import tokenize_midi_file, retrieve_information_from_midi
 from core.service.serializer import TokSequenceEncoder
-from core.api.model import ConfigModel
 
 app = FastAPI()
 
 origins = ["http://localhost:3000", "https://wimu-frontend-ccb0bbc023d3.herokuapp.com"]
 
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"],
-    allow_headers=["*"])
+                   allow_headers=["*"])
 
 
 @app.exception_handler(RequestValidationError)
@@ -30,9 +31,13 @@ async def process(config: ConfigModel = Body(...), file: UploadFile = File(...))
         midi_bytes: bytes = await file.read()
         tokens: list = tokenize_midi_file(config, midi_bytes)
         serialized_tokens = json.dumps(tokens, cls=TokSequenceEncoder)
+        metrics: MusicInformationData = retrieve_information_from_midi(midi_bytes)
         return JSONResponse(
-            content={"success": True, "data": {"tokens": json.loads(serialized_tokens), "metrics": None},
-                     "error": None})
+            content={"success": True,
+                     "data": {"tokens": json.loads(serialized_tokens),
+                              "metrics": json.loads(metrics.model_dump_json())},
+                     "error": None}
+        )
     except HTTPException as e:
         return JSONResponse(content={"success": False, "data": None, "error": str(e.detail)}, status_code=e.status_code)
     except Exception as e:
