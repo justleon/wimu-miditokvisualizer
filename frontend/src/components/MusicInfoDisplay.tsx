@@ -29,13 +29,25 @@ const MusicInfoDisplay: React.FC<TableDisplayProps> = ({ data }) => {
                         <strong>Resolution:</strong> {data.resolution}
                         </div>
                         <div style={{ fontSize: '10px' }}>
-                        <strong>Tempos:</strong> {data.tempos}
+                        <strong>Tempos:</strong> {data.tempos.map(( item ) => {
+                            return (<>
+                                <div>Time: {item[0]} Tempo: {item[1]}</div>
+                            </>)
+                        })}
                         </div>
                         <div style={{ fontSize: '10px' }}>
-                        <strong>Key Signatures:</strong> {data.key_signatures}
+                        <strong>Key Signatures:</strong> {data.key_signatures.map(( item ) => {
+                            return (<>
+                                <div>Time: {item[0]} Root: {item[1]} Mode: {item[2]}</div>
+                            </>)
+                        })}
                         </div>
                         <div style={{ fontSize: '10px' }}>
-                        <strong>Time Signatures:</strong> {data.time_signatures}
+                        <strong>Time Signatures:</strong> {data.time_signatures.map(( item ) => {
+                            return (<>
+                                <div>Time: {item[0]} Signature: {item[1]}/{item[2]}</div>
+                            </>)
+                        })}
                         </div>
                     </>
                     )}
@@ -60,13 +72,13 @@ const MusicInfoDisplay: React.FC<TableDisplayProps> = ({ data }) => {
                             <strong>Number of Pitches Used:</strong> {data.n_pitches_used}
                             </div>
                             <div style={{ fontSize: '10px' }}>
-                            <strong>Polyphony:</strong> {data.polyphony}
+                            <strong>Polyphony:</strong> {data.polyphony.toPrecision(3)}
                             </div>
                             <div style={{ fontSize: '10px' }}>
-                            <strong>Empty Beat Rate:</strong> {data.empty_beat_rate}
+                            <strong>Empty Beat Rate:</strong> {data.empty_beat_rate.toPrecision(3)}
                             </div>
                             <div style={{ fontSize: '10px' }}>
-                            <strong>Drum Pattern Consistency:</strong> {data.drum_pattern_consistency}
+                            <strong>Drum Pattern Consistency:</strong> {data.drum_pattern_consistency.toPrecision(3)}
                             </div>
                         </>
                         )}

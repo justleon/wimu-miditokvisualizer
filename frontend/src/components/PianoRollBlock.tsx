@@ -53,6 +53,13 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = ({ item, heading }) => {
               </div>
             </>
           )}
+          {!isHovered && (
+            <>
+              <div style={{ fontSize: '10px' }}>
+                <strong>{item.type}</strong>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
