@@ -25,6 +25,7 @@ docs/_build/
 
 # Ignore configuration files
 *.ini
+*.conf
 *.env
 
 # Ignore development environment specific files
