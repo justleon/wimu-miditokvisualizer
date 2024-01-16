@@ -30,12 +30,12 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 79
+line-length = 119
 fmt = false
 
 [tool.mypy]
 python_version = "3.10"
-mypy_path = "app/"
+mypy_path = "core/"
 disallow_incomplete_defs = true
 warn_redundant_casts = true
 no_implicit_optional = true
@@ -45,15 +45,12 @@ namespace_packages = true
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = [
-    "spade.*",
-]
 ignore_missing_imports = true
 
 [tool.ruff]
 extend-exclude = [
     ".venv",
-    "data",
+    "dist",
 ]
 ignore = [
     "E402",
@@ -67,6 +64,6 @@ select = [
 
 [tool.isort]
 profile = "black"
-line_length = 79
+line_length = 119
 skip_gitignore = true
 multi_line_output = 3
