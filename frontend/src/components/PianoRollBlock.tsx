@@ -16,6 +16,33 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = ({ item, heading }) => {
   const handleMouseLeave = () => {
     setHovered(false);
   };
+  
+  const dynamicFill = (type: string) => {
+    if (type === 'Bar') {
+      return '#67948b'
+    }
+    else if (type === 'Position' || type === 'TimeShift') {
+      return '#748a9a'
+    }
+    else if (type === 'Tempo' || type === 'Rest') {
+      return '#87673e'
+    }
+    else if (type === 'Pitch' || type === 'NoteOn') {
+      return '#778b68'
+    }
+    else if (type === 'Velocity') {
+      return '#cc968e'
+    }
+    else if (type === 'Duration' || type === 'NoteOff') {
+      return '#4c4732'
+    }
+    else if (type === 'Family' || type === 'TimeSig') {
+      return '#b076b2'
+    }
+    else {
+      return '#000000'
+    }
+  };
 
   return (
       <div
@@ -26,6 +53,7 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = ({ item, heading }) => {
           border: '1px solid #ccc',
           margin: '5px',
           position: 'relative',
+          backgroundColor: dynamicFill(item.type)
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
