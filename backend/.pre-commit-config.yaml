@@ -1,0 +1,28 @@
+default_language_version:
+  python: python3.11.6
+repos:
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        language: system
+        entry: black
+        args: ["--check"]
+        types: [python]
+      - id: isort
+        name: isort
+        language: system
+        entry: isort
+        args: ["--check", "--diff"]
+        types: [python]
+      - id: ruff
+        name: ruff
+        language: system
+        entry: ruff
+        args: ["--force-exclude"]
+        types: [python]
+      - id: mypy
+        name: mypy
+        language: system
+        entry: mypy
+        types: [python]
