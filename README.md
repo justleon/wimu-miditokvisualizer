@@ -112,3 +112,9 @@ Zaimplementowano *middleware* na bazie *starlette*, który przy użyciu modułu 
 ### Deployment
 
 Obie aplikacje są hostowane na Heroku. Aplikacja frontendowa jest dostępna pod adresem: [https://wimu-frontend-ccb0bbc023d3.herokuapp.com](https://wimu-frontend-ccb0bbc023d3.herokuapp.com)
+
+### Autorzy
+
+- Łukasz Pokorzyński
+- Olga Sapiechowska
+- Michał Wiszenko
