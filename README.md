@@ -113,8 +113,34 @@ Zaimplementowano *middleware* na bazie *starlette*, który przy użyciu modułu 
 
 Obie aplikacje są hostowane na Heroku. Aplikacja frontendowa jest dostępna pod adresem: [https://wimu-frontend-ccb0bbc023d3.herokuapp.com](https://wimu-frontend-ccb0bbc023d3.herokuapp.com)
 
-### Autorzy
+### Oryginalni autorzy (2023Z)
 
 - Łukasz Pokorzyński
 - Olga Sapiechowska
 - Michał Wiszenko
+
+### Autorzy rozwijający projekt (2024L)
+
+- Kacper Stefański
+- Konstantin Panov
+- Piotr Malesa
+
+### Planowany harmonogram prac projektu
+
+- Tydzień 1 (19.02 - 23.02):	-
+- Tydzień 2 (26.02 - 01.03):	-
+- Tydzień 3 (04.03 - 08.03):	-
+- **Tydzień 4 (11.03 - 15.03)**:	 -
+- **Tydzień 5 (18.03 - 22.03)**:	Dostarczenie poprawionego design proposal'a ze zmodyfikowanym planem rozszerzenia aplikacji
+- **Tydzień 6 (25.03 - 29.03)**:    Przygotowanie środowiska do pracy nad projektem oraz rozpoczęcie rozwoju nowych funkcjonalności
+- **Tydzień 7 (01.04 - 05.04)**:	Przerwa świąteczna 
+- **Tydzień 8 (08.04 - 12.04)**:	Dalsze prace nad UI oraz prezentacja prototypu
+- **Tydzień 9 (15.04 - 19.04)**:    Dalsze prace nad UI
+- **Tydzień 10 (22.04 -26.04)**:	Ukończona część rozszerzenia UI
+- **Tydzień 11 (29.04 - 03.05)**:   Majówka
+- **Tydzień 12 (06.05 - 10.05)**:	Praca nad implementacją kolejnych tokenizerów (MMM, MuMIDI) i ewentualne poprawki UI
+- **Tydzień 13 (13.05 - 17.05)**:	Dostarczenie i zademonstrowanie funkcjonalnego prototypu
+- **Tydzień 14 (20.05 - 24.05)**:	Ukończenie rozszerzenia API o nowe tokenizery
+- **Tydzień 15 (27.05 - 31.05)**:   Praca nad poprawkami po pierwszej prezentacji projektu
+- **Tydzień 16 (03.06 - 07.06)**:	Oddanie projektu (szacowany termin)
+- Tydzień 17 (10.06 - 14.06):	-
