@@ -39,8 +39,8 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, hea
     <div
       style={{
         display: 'inline-block',
-        width: '70px',
-        height: '100px',
+        width: '40px',
+        height: '60px',
         border: '1px solid #ccc',
         margin: '5px',
         position: 'relative',
@@ -50,7 +50,7 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, hea
       onMouseLeave={handleMouseLeave}
     >
       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-        <div style={{ fontSize: '10px' }}>
+        <div style={{ fontSize: '8px' }}>
           <strong>{item.type}</strong>
         </div>
       </div>
