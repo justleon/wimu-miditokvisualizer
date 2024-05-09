@@ -4,6 +4,7 @@ import FileUpload from './components/FileUpload';
 import Spinner from './components/Spinner';
 import DataDisplay from './components/DataDisplay';
 import MusicInfoDisplay from './components/MusicInfoDisplay';
+import PianoRollDisplay from './components/PianoRollDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
@@ -413,10 +414,19 @@ function App() {
             {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
           </ErrorBoundary>
         </div>
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '75%' }}>
-          <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
-          </ErrorBoundary>
+        
+        <div style={{ display: 'flex', width: '100%'}}>
+          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '50%' }}>
+            <ErrorBoundary fallback={<p>Something went wrong</p>}>
+              {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
+            </ErrorBoundary>
+          </div>
+          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
+            <ErrorBoundary fallback={<p>Something went wrong</p>}>
+              {responseData?.data ? <PianoRollDisplay data={responseData.data.notes} /> : responseData?.error}
+            </ErrorBoundary>
+          </div>
+
         </div>
       </header>
     </div>
