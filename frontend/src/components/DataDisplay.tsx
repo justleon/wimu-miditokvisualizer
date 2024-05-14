@@ -34,7 +34,7 @@ const RNestedList: React.FC<{
         if (Array.isArray(item)) {
           if (isTokenArray(item)) {
             // Render tokens in chunks
-            const chunkedTokens = chunkTokens(item, 16);
+            const chunkedTokens = chunkTokens(item, 12);
             return (
               <div key={index} style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
                 {chunkedTokens.map((chunk, chunkIndex) => (

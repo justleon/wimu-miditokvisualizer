@@ -32,6 +32,8 @@ declare module 'react-piano-roll' {
         gridLineColor: number;
         blackGridBgColor?: number;
         whiteGridBgColor?: number;
+        renderer?: string;
+        noteFormat?: string;
         noteData: NoteData[];
     }
 

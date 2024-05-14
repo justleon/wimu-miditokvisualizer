@@ -409,6 +409,7 @@ function App() {
           </div>
 
         </form>
+
         <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <ErrorBoundary fallback={<p>Something went wrong</p>}>
             {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
@@ -416,7 +417,7 @@ function App() {
         </div>
         
         <div style={{ display: 'flex', width: '100%'}}>
-          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '50%' }}>
+          <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
               {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
             </ErrorBoundary>
@@ -426,7 +427,6 @@ function App() {
               {responseData?.data ? <PianoRollDisplay data={responseData.data.notes} /> : responseData?.error}
             </ErrorBoundary>
           </div>
-
         </div>
       </header>
     </div>
