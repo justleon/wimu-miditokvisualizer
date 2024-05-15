@@ -14,10 +14,10 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
 function App() {
-  const [responseData, setResponseData] = useState<ApiResponse | null>(null);
+  const [responses, setResponses] = useState<{ file: File, response: ApiResponse | null }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedTokenizer, setSelectedTokenizer] = useState<string>('REMI');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
   const [selectedVelocityBins, setSelectedVelocityBins] = useState<number>(32);
   const [specialTokens, setSpecialTokens] = useState<string>("PAD, BOS, EOS, MASK");
@@ -47,9 +47,12 @@ function App() {
   const [uploaderVisible, setUploaderVisible] = useState<boolean>(true);
 
   const handleFileChange = (file: File) => {
-    if (selectedFile !== file) {
-      setSelectedFile(file);
-    }
+    setSelectedFiles((prevFiles) => {
+      if (prevFiles.find(f => f.name === file.name)) {
+        return prevFiles;
+      }
+      return [...prevFiles, file];
+    });
   };
 
   const handleTokenizerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -146,9 +149,11 @@ function App() {
 
   const handleUpload = (event: React.FormEvent) => {
     event.preventDefault();
-    setSelectedNote(null);
-    setSelectedToken(null);
-    if (selectedFile) {
+    selectedFiles.forEach((file) => {
+      if (responses.find(res => res.file.name === file.name)) {
+        return; // Avoid processing the same file again
+      }
+
       const formData = new FormData();
       const configData = {
         tokenizer: selectedTokenizer,
@@ -174,23 +179,18 @@ function App() {
         program_changes: usePrograms ? programChanges : null
       };
 
-      formData.append('file', selectedFile);
+      formData.append('file', file);
       formData.append('config', JSON.stringify(configData));
 
       setLoading(true);
-      setResponseData(null);
 
       fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
         method: 'POST',
         body: formData,
       })
-        .then((response) => {
-          return response.json();
-        })
+        .then((response) => response.json())
         .then((data: ApiResponse) => {
-          if (data.data) {
-            setResponseData(data);
-          }
+          setResponses((prevResponses) => [...prevResponses, { file, response: data }]);
         })
         .catch((error) => {
           console.log(error);
@@ -198,7 +198,7 @@ function App() {
         .finally(() => {
           setLoading(false);
         });
-    }
+    });
   };
 
   const handleNoteHover = (note: Note | null) => {
@@ -222,301 +222,283 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>
-          {responseData === null || uploaderVisible ? <form onSubmit={handleUpload} >
-            <div className="form-row">
-              <label htmlFor="tokenizerSelect">Select Tokenizer Type: </label>
-              <div>
-                <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
-                  <option value="REMI">REMI</option>
-                  <option value="MIDILike">MIDI-like</option>
-                  <option value="TSD">TSD</option>
-                  <option value="Structured">Structured</option>
-                  <option value="CPWord">CPWord</option>
-                  <option value="Octuple">Octuple</option>
-                </select>
-              </div>
+        <form onSubmit={handleUpload}>
+          <div className="form-row">
+            <label htmlFor="tokenizerSelect">Select Tokenizer Type: </label>
+            <div>
+              <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
+                <option value="REMI">REMI</option>
+                <option value="MIDILike">MIDI-like</option>
+                <option value="TSD">TSD</option>
+                <option value="Structured">Structured</option>
+                <option value="CPWord">CPWord</option>
+                <option value="Octuple">Octuple</option>
+              </select>
             </div>
+          </div>
 
-            <button type="button" className="tokenizerConfigButton" onClick={toggleTokenizerConfig}>
-              {showTokenizerConfig ? 'Hide Tokenizer Config' : 'Show Tokenizer Config'}
-            </button>
+          <button type="button" className="tokenizerConfigButton" onClick={toggleTokenizerConfig}>
+            {showTokenizerConfig ? 'Hide Tokenizer Config' : 'Show Tokenizer Config'}
+          </button>
 
-            {showTokenizerConfig && (
-              <>
-                <div className="tokenizerConfig">
+          {showTokenizerConfig && (
+            <>
+              <div className="tokenizerConfig">
+                <div className="form-row">
+                  <div className="label-container">
+                    <label htmlFor="pitchRange">Select Pitch Range: </label>
+                  </div>
+                  <div className="select-container">
+                    <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 127]} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="label-container">
+                    <label htmlFor="velocityBins">Number of velocity bins: </label>
+                  </div>
+                  <div className="select-container">
+                    <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 127]} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <label htmlFor="specialTokens">Special Tokens (comma-separated): </label>
+                  <input type="text" id="specialTokens" value={specialTokens} onChange={handleSpecialTokensChange} />
+                </div>
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={useChords} onChange={handleUseChordsChange} />
+                    Use Chords
+                  </label>
+                </div>
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={useRests} onChange={handleUseRestsChange} />
+                    Use Rests
+                  </label>
+                </div>
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={useTempos} onChange={handleUseTemposChange} />
+                    Use Tempos
+                  </label>
+                </div>
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={useTimeSignatures} onChange={handleUseTimeSignaturesChange} />
+                    Use Time Signatures
+                  </label>
+                </div>
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={useSustainPedals} onChange={handleUseSustainPedalsChange} />
+                    Use Sustain Pedals
+                  </label>
+                </div>
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={usePitchBends} onChange={handleUsePitchBendsChange} />
+                    Use Pitch Bends
+                  </label>
+                </div>
+
+                {selectedTokenizer === 'TSD' ||
+                selectedTokenizer === 'REMI' ||
+                selectedTokenizer === 'MIDILike' ||
+                selectedTokenizer === 'Structured' ||
+                selectedTokenizer === 'CPWord' ? (
                   <div className="form-row">
-                    <div className="label-container">
-                      <label htmlFor="pitchRange">Select Pitch Range: </label>
+                    <label>
+                      <input type="checkbox" checked={usePrograms} onChange={handleUseProgramsChange} />
+                      Use Programs
+                    </label>
+                  </div>
+                ) : null}
+
+                {usePrograms && (
+                  <>
+                    <div className="form-row">
+                      <div className="label-container">
+                        <label htmlFor="programsSlider">MIDI programs: </label>
+                      </div>
+                      <div className="select-container">
+                        <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 128]} />
+                      </div>
                     </div>
-                    <div className="select-container">
-                      <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 127]} />
-                    </div>
-                  </div>
 
-                  <div className="form-row">
-                    <div className="label-container">
-                      <label htmlFor="velocityBins">Number of velocity bins: </label>
-                    </div>
-                    <div className="select-container">
-                      <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 127]} />
-                    </div>
-                  </div>
-
-                  <div className="form-row">
-                    <label htmlFor="specialTokens">Special Tokens (comma-separated): </label>
-                    <input
-                      type="text"
-                      id="specialTokens"
-                      value={specialTokens}
-                      onChange={handleSpecialTokensChange}
-                    />
-                  </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={useChords} onChange={handleUseChordsChange} />
-                      Use Chords
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={useRests} onChange={handleUseRestsChange} />
-                      Use Rests
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={useTempos} onChange={handleUseTemposChange} />
-                      Use Tempos
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={useTimeSignatures} onChange={handleUseTimeSignaturesChange} />
-                      Use Time Signatures
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={useSustainPedals} onChange={handleUseSustainPedalsChange} />
-                      Use Sustain Pedals
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={usePitchBends} onChange={handleUsePitchBendsChange} />
-                      Use Pitch Bends
-                    </label>
-                  </div>
-
-                  {selectedTokenizer === 'TSD' ||
-                    selectedTokenizer === 'REMI' ||
-                    selectedTokenizer === 'MIDILike' ||
-                    selectedTokenizer === 'Structured' ||
-                    selectedTokenizer === 'CPWord' ? (
                     <div className="form-row">
                       <label>
-                        <input type="checkbox" checked={usePrograms} onChange={handleUseProgramsChange} />
-                        Use Programs
+                        <input type="checkbox" checked={oneTokenStreamForPrograms} onChange={handleOneTokenStreamForProgramsChange} />
+                        One Token Stream for Programs
                       </label>
                     </div>
-                  ) : null}
 
-                  {usePrograms && (
-                    <>
-                      <div className="form-row">
-                        <div className="label-container">
-                          <label htmlFor="programsSlider">MIDI programs: </label>
-                        </div>
-                        <div className="select-container">
-                          <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 128]} />
-                        </div>
-                      </div>
-
+                    {selectedTokenizer === 'REMI' || selectedTokenizer === 'TSD' || selectedTokenizer === 'MIDILike' ? (
                       <div className="form-row">
                         <label>
-                          <input type="checkbox" checked={oneTokenStreamForPrograms} onChange={handleOneTokenStreamForProgramsChange} />
-                          One Token Stream for Programs
+                          <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
+                          Program Changes
                         </label>
                       </div>
+                    ) : null}
+                  </>
+                )}
 
-                      {selectedTokenizer === 'REMI' || selectedTokenizer === 'TSD' || selectedTokenizer === 'MIDILike' ? (
-                        <div className="form-row">
-                          <label>
-                            <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
-                            Program Changes
-                          </label>
-                        </div>
-                      ) : null}
-                    </>
-                  )}
-
-                  <div className="form-row">
-                    <div className="label-container">
-                      <label htmlFor="nbTempos">Number of tempos bins: </label>
-                    </div>
-                    <div className="select-container">
-                      <SingleValueSlider onValueChange={handleNbTemposChange} initialValue={selectedNbTempos} limits={[0, 100]} />
-                    </div>
+                <div className="form-row">
+                  <div className="label-container">
+                    <label htmlFor="nbTempos">Number of tempos bins: </label>
                   </div>
-
-                  <div className="form-row">
-                    <div className="label-container">
-                      <label htmlFor="tempoRange">Select Tempo Range: </label>
-                    </div>
-                    <div className="select-container">
-                      <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 350]} />
-                    </div>
+                  <div className="select-container">
+                    <SingleValueSlider onValueChange={handleNbTemposChange} initialValue={selectedNbTempos} limits={[0, 100]} />
                   </div>
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={logTempos} onChange={handleLogTemposChange} />
-                      Log Scaled Tempo Values
-                    </label>
-                  </div>
-
-                  {selectedTokenizer !== 'Octuple' ? (
-                    <>
-                      <div className="form-row">
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={deleteEqualSuccessiveTempoChanges}
-                            onChange={handleDeleteEqualSuccessiveTempoChangesChange}
-                          />
-                          Delete Equal Successive Tempo Changes
-                        </label>
-                      </div>
-                      <div className="form-row">
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={deleteEqualSuccessiveTimeSigChanges}
-                            onChange={handleDeleteEqualSuccessiveTimeSigChangesChange}
-                          />
-                          Delete Equal Successive Time Signature Changes
-                        </label>
-                      </div>
-                    </>
-                  ) : null}
-
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={sustainPedalDuration} onChange={handleSustainPedalDurationChange} />
-                      Sustain Pedal Duration
-                    </label>
-                  </div>
-
-                  <div className="form-row">
-                    <div className="label-container">
-                      <label htmlFor="pitchBendRange">Select Pitch Bend Range: </label>
-                    </div>
-                    <div className="select-container">
-                      <RangeSlider onRangeChange={handlePitchBendRangeChange} initialValues={pitchBendRange} limits={[-8192, 8191]} />
-                    </div>
-                  </div>
-
-                  <div className="form-row">
-                    <div className="label-container">
-                      <label htmlFor="pitchBendRangeNumber">Select Pitch Bend Range: </label>
-                    </div>
-                    <div className="select-container">
-                      <SingleValueSlider onValueChange={handlePitchBendRangeNumberChange} initialValue={pitchBendRangeNumber} limits={[0, 100]} />
-                    </div>
-                  </div>
-
                 </div>
-              </>
 
-            )}
+                <div className="form-row">
+                  <div className="label-container">
+                    <label htmlFor="tempoRange">Select Tempo Range: </label>
+                  </div>
+                  <div className="select-container">
+                    <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 350]} />
+                  </div>
+                </div>
 
-            <div className="form-row">
-              <FileUpload onFileSelect={handleFileChange} acceptedFormats={".mid"} />
-              <button type="submit" disabled={loading}>
-                {loading ? <Spinner /> : 'Upload'}
-              </button>
-            </div>
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={logTempos} onChange={handleLogTemposChange} />
+                    Log Scaled Tempo Values
+                  </label>
+                </div>
 
-          </form> : null}
-          {responseData !== null ?
-            <button style={{ width: '100%', marginTop: 0, backgroundColor: 'transparent', borderTopRightRadius: 0, borderTopLeftRadius: 0 }} onClick={() => setUploaderVisible(!uploaderVisible)}>
-              {uploaderVisible ? "Hide" : "Show"}
-            </button> : null
-          }
+                {selectedTokenizer !== 'Octuple' ? (
+                  <>
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={deleteEqualSuccessiveTempoChanges} onChange={handleDeleteEqualSuccessiveTempoChangesChange} />
+                        Delete Equal Successive Tempo Changes
+                      </label>
+                    </div>
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={deleteEqualSuccessiveTimeSigChanges} onChange={handleDeleteEqualSuccessiveTimeSigChangesChange} />
+                        Delete Equal Successive Time Signature Changes
+                      </label>
+                    </div>
+                  </>
+                ) : null}
+
+                <div className="form-row">
+                  <label>
+                    <input type="checkbox" checked={sustainPedalDuration} onChange={handleSustainPedalDurationChange} />
+                    Sustain Pedal Duration
+                  </label>
+                </div>
+
+                <div className="form-row">
+                  <div className="label-container">
+                    <label htmlFor="pitchBendRange">Select Pitch Bend Range: </label>
+                  </div>
+                  <div className="select-container">
+                    <RangeSlider onRangeChange={handlePitchBendRangeChange} initialValues={pitchBendRange} limits={[-8192, 8191]} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="label-container">
+                    <label htmlFor="pitchBendRangeNumber">Select Pitch Bend Range: </label>
+                  </div>
+                  <div className="select-container">
+                    <SingleValueSlider onValueChange={handlePitchBendRangeNumberChange} initialValue={pitchBendRangeNumber} limits={[0, 100]} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="form-row">
+            <FileUpload onFileSelect={handleFileChange} acceptedFormats={".mid"} />
+            <button type="submit" disabled={loading}>
+              {loading ? <Spinner /> : 'Upload'}
+            </button>
+          </div>
+        </form>
+
+        {responses.length > 0 && (
+          <Tabs>
+            <TabList>
+              {responses.map((res, index) => (
+                <Tab key={index}>{res.file.name}</Tab>
+              ))}
+            </TabList>
+
+            {responses.map((res, index) => (
+  <TabPanel key={index}>
+    {res.response ? (
+      <>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            {res.response?.data ? <MusicInfoDisplay data={res.response.data.metrics} /> : res.response?.error}
+          </ErrorBoundary>
         </div>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            {res.response?.data ? <FilePlayback file={res.file} /> : null}
+          </ErrorBoundary>
+        </div>
+        <div style={{ display: 'flex', width: '100%', maxWidth: '100vw' }}>
+          <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
+            <ErrorBoundary fallback={<p>Something went wrong</p>}>
+              {res.response?.data ?
+                <DataDisplay
+                  data={res.response.data.tokens}
+                  hoveredNote={hoveredNote}
+                  selectedNote={selectedNote}
+                  onTokenHover={handleTokenHover}
+                  onTokenSelect={handleTokenSelect}
+                  hoveredToken={hoveredToken}
+                  selectedToken={selectedToken}
+                /> : res.response?.error}
+            </ErrorBoundary>
+          </div>
+          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
+            <ErrorBoundary fallback={<p>Something went wrong</p>}>
+              {res.response?.data && res.response.data.notes.length > 0 ? (
+                <Tabs>
+                  <TabList>
+                    {res.response.data.notes.map((_, idx) => (
+                      <Tab key={idx}>Track {idx + 1}</Tab>
+                    ))}
+                  </TabList>
+                  {res.response.data.notes.map((notes, idx) => (
+                    <TabPanel key={idx}>
+                      <PianoRollDisplay
+                        notes={res.response?.data?.notes ?? [[]]}
+                        onNoteHover={handleNoteHover}
+                        onNoteSelect={handleNoteSelect}
+                        hoveredToken={hoveredToken}
+                        selectedToken={selectedToken}
+                        track={idx}
+                      />
+                    </TabPanel>
+                  ))}
+                </Tabs>
+              ) : res.response?.error}
+            </ErrorBoundary>
+          </div>
+        </div>
+      </>
+    ) : <p>No response data available</p>}
+  </TabPanel>
+))}
 
-        {responseData && (
-        <Tabs>
-          <TabList>
-            <Tab>{selectedFile ? selectedFile.name : "Uploaded File"}</Tab>
-          </TabList>
-
-          <TabPanel>
-            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-              <ErrorBoundary fallback={<p>Something went wrong</p>}>
-                {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
-              </ErrorBoundary>
-            </div>
-
-            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-              <ErrorBoundary fallback={<p>Something went wrong</p>}>
-                {(responseData?.data && selectedFile) ? <FilePlayback file={selectedFile} /> : null}
-              </ErrorBoundary>
-            </div>
-
-            <div style={{ display: 'flex', width: '100%', maxWidth: '100vw' }}>
-              <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
-                <ErrorBoundary fallback={<p>Something went wrong</p>}>
-                  {responseData?.data ?
-                    <DataDisplay
-                      data={responseData.data.tokens}
-                      hoveredNote={hoveredNote}
-                      selectedNote={selectedNote}
-                      onTokenHover={handleTokenHover}
-                      onTokenSelect={handleTokenSelect}
-                      hoveredToken={hoveredToken}
-                      selectedToken={selectedToken}
-                    /> : responseData?.error}
-                </ErrorBoundary>
-              </div>
-
-              <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
-                <ErrorBoundary fallback={<p>Something went wrong</p>}>
-                  {responseData?.data && responseData.data.notes.length > 0 ? (
-                    <Tabs>
-                      <TabList>
-                        {responseData.data.notes.map((_, index) => (
-                          <Tab key={index}>Track {index + 1}</Tab>
-                        ))}
-                      </TabList>
-                      {responseData.data.notes.map((notes, index) => (
-                        <TabPanel key={index}>
-                          <PianoRollDisplay
-                            notes={responseData.data.notes}
-                            onNoteHover={handleNoteHover}
-                            onNoteSelect={handleNoteSelect}
-                            hoveredToken={hoveredToken}
-                            selectedToken={selectedToken}
-                            track={index}
-                          />
-                        </TabPanel>
-                      ))}
-                    </Tabs>
-                  ) : responseData?.error}
-                </ErrorBoundary>
-              </div>
-            </div>
-          </TabPanel>
-        </Tabs>
+          </Tabs>
         )}
-
       </header>
     </div>
   );
