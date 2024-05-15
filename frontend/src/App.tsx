@@ -452,60 +452,71 @@ function App() {
           }
         </div>
 
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-          <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
-          </ErrorBoundary>
-        </div>
+        {responseData && (
+        <Tabs>
+          <TabList>
+            <Tab>{selectedFile ? selectedFile.name : "Uploaded File"}</Tab>
+          </TabList>
 
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-          <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            {(responseData?.data && selectedFile) ? <FilePlayback file={selectedFile} /> : null}
-          </ErrorBoundary>
-        </div>
+          <TabPanel>
+            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+              <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
+              </ErrorBoundary>
+            </div>
 
-        <div style={{ display: 'flex', width: '100%' }}>
-          <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
-            <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data ?
-                <DataDisplay
-                  data={responseData.data.tokens}
-                  hoveredNote={hoveredNote}
-                  selectedNote={selectedNote}
-                  onTokenHover={handleTokenHover}
-                  onTokenSelect={handleTokenSelect}
-                  hoveredToken={hoveredToken}
-                  selectedToken={selectedToken}
-                /> : responseData?.error}
-            </ErrorBoundary>
-          </div>
+            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+              <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                {(responseData?.data && selectedFile) ? <FilePlayback file={selectedFile} /> : null}
+              </ErrorBoundary>
+            </div>
 
-          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
-            <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data && responseData.data.notes.length > 0 ? (
-                <Tabs>
-                  <TabList>
-                    {responseData.data.notes.map((_, index) => (
-                      <Tab key={index}>Track {index + 1}</Tab>
-                    ))}
-                  </TabList>
-                  {responseData.data.notes.map((notes, index) => (
-                    <TabPanel key={index}>
-                      <PianoRollDisplay
-                        notes={responseData.data.notes}
-                        onNoteHover={handleNoteHover}
-                        onNoteSelect={handleNoteSelect}
-                        hoveredToken={hoveredToken}
-                        selectedToken={selectedToken}
-                        track={index}
-                      />
-                    </TabPanel>
-                  ))}
-                </Tabs>
-              ) : responseData?.error}
-            </ErrorBoundary>
-          </div>
-        </div>
+            <div style={{ display: 'flex', width: '100%', maxWidth: '100vw' }}>
+              <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
+                <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                  {responseData?.data ?
+                    <DataDisplay
+                      data={responseData.data.tokens}
+                      hoveredNote={hoveredNote}
+                      selectedNote={selectedNote}
+                      onTokenHover={handleTokenHover}
+                      onTokenSelect={handleTokenSelect}
+                      hoveredToken={hoveredToken}
+                      selectedToken={selectedToken}
+                    /> : responseData?.error}
+                </ErrorBoundary>
+              </div>
+
+              <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
+                <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                  {responseData?.data && responseData.data.notes.length > 0 ? (
+                    <Tabs>
+                      <TabList>
+                        {responseData.data.notes.map((_, index) => (
+                          <Tab key={index}>Track {index + 1}</Tab>
+                        ))}
+                      </TabList>
+                      {responseData.data.notes.map((notes, index) => (
+                        <TabPanel key={index}>
+                          <PianoRollDisplay
+                            notes={responseData.data.notes}
+                            onNoteHover={handleNoteHover}
+                            onNoteSelect={handleNoteSelect}
+                            hoveredToken={hoveredToken}
+                            selectedToken={selectedToken}
+                            track={index}
+                          />
+                        </TabPanel>
+                      ))}
+                    </Tabs>
+                  ) : responseData?.error}
+                </ErrorBoundary>
+              </div>
+            </div>
+          </TabPanel>
+        </Tabs>
+        )}
+
       </header>
     </div>
   );
