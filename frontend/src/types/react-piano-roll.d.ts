@@ -19,7 +19,7 @@ declare module 'react-piano-roll' {
         bpm: number;
         zoom: number;
         resolution: number;
-        noteData: NoteData;
+        noteData: NoteData[];
         playing: boolean;
         view: HTMLElement;
     }
@@ -35,6 +35,9 @@ declare module 'react-piano-roll' {
         renderer?: string;
         noteFormat?: string;
         noteData: NoteData[];
+        activateKeys?: boolean;
+        noteColor?: number | ((note: NoteData) => number);
+        pianoKeyWidth?: number;
     }
 
     const PianoRoll: React.ComponentType<PianoRollProps>;

@@ -9,10 +9,12 @@ import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
+import { convertToPianoRollFormat } from './components/MidiUtils';
+import { NoteData } from 'react-piano-roll';
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedTokenizer, setSelectedTokenizer] = useState<string>('REMI');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
@@ -37,9 +39,12 @@ function App() {
   const [pitchBendRangeNumber, setPitchBendRangeNumber] = useState<number>(32);
   const [deleteEqualSuccessiveTimeSigChanges, setDeleteEqualSuccessiveTimeSigChanges] = useState<boolean>(false);
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
+  const [key, setKey] = useState<number>(0);
 
   const handleFileChange = (file: File) => {
-    setSelectedFile(file);
+    if (selectedFile !== file) {
+      setSelectedFile(file);
+    }
   };
 
   const handleTokenizerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -159,22 +164,31 @@ function App() {
         pitch_bend_range: [...pitchBendRange, pitchBendRangeNumber],
         programs: usePrograms ? selectedPrograms : null,
         one_token_stream_for_programs: usePrograms ? oneTokenStreamForPrograms : null,
-        program_changes: usePrograms ? programChanges : null
+        program_changes: usePrograms ? programChanges : null        
       };
-
+      
       formData.append('file', selectedFile);
       formData.append('config', JSON.stringify(configData));
-
+      
       setLoading(true);
-
+      setResponseData(null);
+      setKey(prevKey => prevKey + 1);
+      
       fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
         method: 'POST',
         body: formData,
       })
-        .then((response) => {
-          return response.json();
+      .then((response) => {
+        return response.json();
+      })
+      .then((data: ApiResponse) => {
+          convertToPianoRollFormat(selectedFile, (noteData: NoteData[][]) => {
+            if (data.data) {
+              data.data.notes = noteData[0];
+              setResponseData(data);
+            }
+          });
         })
-        .then((data: ApiResponse) => setResponseData(data))
         .catch((error) => {
           console.log(error);
         })
