@@ -8,10 +8,12 @@ import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
+import { processMidiFile } from './components/MidiUtils';
+import PianoRollDisplay from './components/PianoRollDisplay';
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedTokenizer, setSelectedTokenizer] = useState<string>('REMI');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPitchRange, setSelectedPitchRange] = useState<number[]>([21, 109]);
@@ -38,7 +40,9 @@ function App() {
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
 
   const handleFileChange = (file: File) => {
-    setSelectedFile(file);
+    if (selectedFile !== file) {
+      setSelectedFile(file);
+    }
   };
 
   const handleTokenizerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -158,22 +162,30 @@ function App() {
         pitch_bend_range: [...pitchBendRange, pitchBendRangeNumber],
         programs: usePrograms ? selectedPrograms : null,
         one_token_stream_for_programs: usePrograms ? oneTokenStreamForPrograms : null,
-        program_changes: usePrograms ? programChanges : null
+        program_changes: usePrograms ? programChanges : null        
       };
-
+      
       formData.append('file', selectedFile);
       formData.append('config', JSON.stringify(configData));
-
+      
       setLoading(true);
-
+      setResponseData(null);
+      
       fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
         method: 'POST',
         body: formData,
       })
-        .then((response) => {
-          return response.json();
+      .then((response) => {
+        return response.json();
+      })
+      .then((data: ApiResponse) => {
+        processMidiFile(selectedFile, (noteData: any[]) => {
+          if (data.data) {
+            data.data.notes = noteData;
+            setResponseData(data);
+          }
+        });
         })
-        .then((data: ApiResponse) => setResponseData(data))
         .catch((error) => {
           console.log(error);
         })
@@ -408,15 +420,26 @@ function App() {
           </div>
 
         </form>
+
         <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <ErrorBoundary fallback={<p>Something went wrong</p>}>
             {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
           </ErrorBoundary>
         </div>
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', maxWidth: '75%' }}>
-          <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
-          </ErrorBoundary>
+        
+        <div style={{ display: 'flex', width: '100%'}}>
+          <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
+            <ErrorBoundary fallback={<p>Something went wrong</p>}>
+              {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
+            </ErrorBoundary>
+          </div>
+
+          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
+            <ErrorBoundary fallback={<p>Something went wrong</p>}>
+              {responseData?.data && responseData.data.notes.length > 0 ? <PianoRollDisplay notes={responseData.data.notes} /> : responseData?.error}
+            </ErrorBoundary>
+          </div>
+
         </div>
       </header>
     </div>

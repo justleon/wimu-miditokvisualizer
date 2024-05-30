@@ -24,6 +24,7 @@ interface MusicInfoData {
 interface DataStructure {
   tokens: NestedList<Token>;
   metrics: MusicInfoData;
+  notes: any[];
 }
 
 interface ApiResponse {
