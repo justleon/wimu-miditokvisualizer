@@ -4,13 +4,12 @@ import FileUpload from './components/FileUpload';
 import Spinner from './components/Spinner';
 import DataDisplay from './components/DataDisplay';
 import MusicInfoDisplay from './components/MusicInfoDisplay';
-import PianoRollDisplay from './components/PianoRollDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
-import { convertToPianoRollFormat } from './components/MidiUtils';
-import { NoteData } from 'react-piano-roll';
+import { processMidiFile } from './components/MidiUtils';
+import PianoRollDisplay from './components/PianoRollDisplay';
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
@@ -39,7 +38,6 @@ function App() {
   const [pitchBendRangeNumber, setPitchBendRangeNumber] = useState<number>(32);
   const [deleteEqualSuccessiveTimeSigChanges, setDeleteEqualSuccessiveTimeSigChanges] = useState<boolean>(false);
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
-  const [key, setKey] = useState<number>(0);
 
   const handleFileChange = (file: File) => {
     if (selectedFile !== file) {
@@ -172,7 +170,6 @@ function App() {
       
       setLoading(true);
       setResponseData(null);
-      setKey(prevKey => prevKey + 1);
       
       fetch(`${process.env.REACT_APP_API_BASE_URL}/process`, {
         method: 'POST',
@@ -182,12 +179,12 @@ function App() {
         return response.json();
       })
       .then((data: ApiResponse) => {
-          convertToPianoRollFormat(selectedFile, (noteData: NoteData[][]) => {
-            if (data.data) {
-              data.data.notes = noteData[0];
-              setResponseData(data);
-            }
-          });
+        processMidiFile(selectedFile, (noteData: any[]) => {
+          if (data.data) {
+            data.data.notes = noteData;
+            setResponseData(data);
+          }
+        });
         })
         .catch((error) => {
           console.log(error);
@@ -436,11 +433,13 @@ function App() {
               {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
             </ErrorBoundary>
           </div>
+
           <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data ? <PianoRollDisplay data={responseData.data.notes} /> : responseData?.error}
+              {responseData?.data && responseData.data.notes.length > 0 ? <PianoRollDisplay notes={responseData.data.notes} /> : responseData?.error}
             </ErrorBoundary>
           </div>
+
         </div>
       </header>
     </div>

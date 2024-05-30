@@ -1,5 +1,3 @@
-import { NoteData } from 'react-piano-roll';
-
 interface Token {
   type: string;
   value: string;
@@ -26,7 +24,7 @@ interface MusicInfoData {
 interface DataStructure {
   tokens: NestedList<Token>;
   metrics: MusicInfoData;
-  notes: NoteData[];
+  notes: any[];
 }
 
 interface ApiResponse {
