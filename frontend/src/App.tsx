@@ -6,9 +6,8 @@ import DataDisplay from './components/DataDisplay';
 import MusicInfoDisplay from './components/MusicInfoDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
-import { ApiResponse } from './interfaces/ApiResponse';
+import { ApiResponse, Note } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
-import { processMidiFile } from './components/MidiUtils';
 import PianoRollDisplay from './components/PianoRollDisplay';
 
 function App() {
@@ -38,6 +37,7 @@ function App() {
   const [pitchBendRangeNumber, setPitchBendRangeNumber] = useState<number>(32);
   const [deleteEqualSuccessiveTimeSigChanges, setDeleteEqualSuccessiveTimeSigChanges] = useState<boolean>(false);
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
+  const [hoveredNote, setHoveredNote] = useState<Note | null>(null);
 
   const handleFileChange = (file: File) => {
     if (selectedFile !== file) {
@@ -179,12 +179,17 @@ function App() {
         return response.json();
       })
       .then((data: ApiResponse) => {
-        processMidiFile(selectedFile, (noteData: any[]) => {
           if (data.data) {
-            data.data.notes = noteData;
+            // data.data.notes.forEach((track, trackIndex) => {
+            //   console.log(`Track ${trackIndex + 1}:`);
+
+            //   track.forEach((note, noteIndex) => {
+            //     console.log(`  Note ${noteIndex + 1}: Pitch ${note.pitch}, Name ${note.name}, Start ${note.start}, End ${note.end}`);
+            //   });
+            // });
+
             setResponseData(data);
           }
-        });
         })
         .catch((error) => {
           console.log(error);
@@ -193,6 +198,10 @@ function App() {
           setLoading(false);
         });
     }
+  };
+
+  const handleNoteHover = (note: Note | null) => {
+    setHoveredNote(note);
   };
 
   return (
@@ -430,13 +439,13 @@ function App() {
         <div style={{ display: 'flex', width: '100%'}}>
           <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data ? <DataDisplay data={responseData.data.tokens} /> : responseData?.error}
+              {responseData?.data ? <DataDisplay data={responseData.data.tokens} hoveredNote={hoveredNote} /> : responseData?.error}
             </ErrorBoundary>
           </div>
 
           <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data && responseData.data.notes.length > 0 ? <PianoRollDisplay notes={responseData.data.notes} /> : responseData?.error}
+              {responseData?.data && responseData.data.notes.length > 0 ? <PianoRollDisplay notes={responseData.data.notes} onNoteHover={handleNoteHover} track={0} /> : responseData?.error}
             </ErrorBoundary>
           </div>
 

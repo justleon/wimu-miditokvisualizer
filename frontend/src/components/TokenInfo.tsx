@@ -43,6 +43,9 @@ const TokenInfo: React.FC<DataDisplayProps> = ({ token, heading }) => {
         <div style={{ fontSize: '14px' }}>
           <strong>Desc:</strong> {token.desc}
         </div>
+        <div style={{ fontSize: '14px' }}>
+          <strong>Note ID:</strong> {token.note_id}
+        </div>
       </div>
     )}
   </div >;

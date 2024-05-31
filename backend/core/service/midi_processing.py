@@ -8,7 +8,7 @@ from miditok import TokenizerConfig
 from miditoolkit import MidiFile
 from mido import MidiFile as MidoMidiFile
 
-from core.api.model import BasicInfoData, ConfigModel, MetricsData, MusicInformationData
+from core.api.model import BasicInfoData, ConfigModel, MetricsData, MusicInformationData, Note
 from core.service.tokenizer_factory import TokenizerFactory
 
 
@@ -44,7 +44,9 @@ def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes) -> List:
 
     midi = MidiFile(file=BytesIO(midi_bytes))
     tokens = tokenizer(midi)
-    return tokens
+    notes = midi_to_notes(midi)
+
+    return tokens, notes
 
 
 def retrieve_information_from_midi(midi_bytes: bytes) -> MusicInformationData:
@@ -113,3 +115,19 @@ def retrieve_metrics(music_file: muspy.Music) -> MetricsData:
         drum_pattern_consistency = 0.0
 
     return MetricsData(pitch_range, n_pitches_used, polyphony_rate, empty_beat_rate, drum_pattern_consistency)
+
+def midi_to_notes(midi: MidiFile) -> List[List[Note]]:
+    notes = []
+    for instrument in midi.instruments:
+        track_notes = []
+        for note in instrument.notes:
+            note_name = pitch_to_name(note.pitch)
+            track_notes.append(Note(note.pitch, note_name, note.start, note.end, note.velocity))
+        notes.append(track_notes)
+    return notes
+
+def pitch_to_name(pitch: int) -> str:
+    note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    octave = pitch // 12 - 1
+    note = note_names[pitch % 12]
+    return f"{note}{octave}"

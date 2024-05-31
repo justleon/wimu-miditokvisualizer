@@ -5,6 +5,7 @@ import TokenInfo from './TokenInfo';
 
 interface DataDisplayProps {
   data: NestedList<Token>;
+  hoveredNote: any | null;
 }
 
 function isTokenArray(value: NestedList<Token>): value is Token[] {
@@ -24,7 +25,8 @@ const RNestedList: React.FC<{
   list: NestedList<Token>;
   level: number;
   parentIndex: number[];
-}> = ({ onHover, list, level, parentIndex }) => {
+  hoveredNote: any | null;
+}> = ({ onHover, list, level, parentIndex, hoveredNote }) => {
   return (
     <>
       {list.map((item, index) => {
@@ -45,6 +47,7 @@ const RNestedList: React.FC<{
                         item={token}
                         onHover={onHover}
                         heading={heading}
+                        highlight={hoveredNote && token.note_id === hoveredNote.start + ':' + hoveredNote.pitch}
                       />
                     ))}
                   </div>
@@ -61,6 +64,7 @@ const RNestedList: React.FC<{
                   list={item}
                   level={level + 1}
                   parentIndex={currentIndex}
+                  hoveredNote={hoveredNote}
                 />
               </div>
             );
@@ -73,6 +77,7 @@ const RNestedList: React.FC<{
               item={item as Token}
               onHover={onHover}
               heading={heading}
+              highlight={hoveredNote && item.note_id === hoveredNote.start + ':' + hoveredNote.pitch}
             />
           );
         }
@@ -82,8 +87,7 @@ const RNestedList: React.FC<{
   );
 }
 
-const DataDisplay: React.FC<DataDisplayProps> = ({ data }) => {
-
+const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote }) => {
   const [token, setToken] = useState<Token | null>(null);
   const [heading, setHeading] = useState<string>("");
 
@@ -104,7 +108,7 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ data }) => {
       <div style={{ flex: 3}}>
         <RNestedList
           onHover={updateTokenInfo}
-          list={data} level={0} parentIndex={[]} />
+          list={data} level={0} parentIndex={[]} hoveredNote={hoveredNote}/>
       </div>
     </div>
   );  
