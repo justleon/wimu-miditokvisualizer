@@ -9,7 +9,7 @@ from miditoolkit import MidiFile
 from mido import MidiFile as MidoMidiFile
 
 from core.api.model import BasicInfoData, ConfigModel, MetricsData, MusicInformationData, Note
-from core.service.tokenizer_factory import TokenizerFactory
+from core.service.tokenizers.tokenizer_factory import TokenizerFactory
 
 
 def tokenize_midi_file(user_config: ConfigModel, midi_bytes: bytes) -> List:
