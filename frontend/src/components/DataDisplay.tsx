@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Token, NestedList } from '../interfaces/ApiResponse';
+import { Token, NestedList, Note } from '../interfaces/ApiResponse';
 import PianoRollBlock from './PianoRollBlock';
 import TokenInfo from './TokenInfo';
 
 interface DataDisplayProps {
   data: NestedList<Token>;
-  hoveredNote: any | null;
+  hoveredNote: Note | null;
+  selectedNote: Note | null;
 }
 
 function isTokenArray(value: NestedList<Token>): value is Token[] {
@@ -25,8 +26,9 @@ const RNestedList: React.FC<{
   list: NestedList<Token>;
   level: number;
   parentIndex: number[];
-  hoveredNote: any | null;
-}> = ({ onHover, list, level, parentIndex, hoveredNote }) => {
+  hoveredNote: Note | null;
+  selectedNote: Note | null;
+}> = ({ onHover, list, level, parentIndex, hoveredNote, selectedNote }) => {
   return (
     <>
       {list.map((item, index) => {
@@ -48,6 +50,7 @@ const RNestedList: React.FC<{
                         onHover={onHover}
                         heading={heading}
                         highlight={hoveredNote && token.note_id === hoveredNote.start + ':' + hoveredNote.pitch}
+                        selected={selectedNote && token.note_id === selectedNote.start + ':' + selectedNote.pitch}
                       />
                     ))}
                   </div>
@@ -65,6 +68,7 @@ const RNestedList: React.FC<{
                   level={level + 1}
                   parentIndex={currentIndex}
                   hoveredNote={hoveredNote}
+                  selectedNote={selectedNote}
                 />
               </div>
             );
@@ -78,6 +82,7 @@ const RNestedList: React.FC<{
               onHover={onHover}
               heading={heading}
               highlight={hoveredNote && item.note_id === hoveredNote.start + ':' + hoveredNote.pitch}
+              selected={selectedNote && item.note_id === selectedNote.start + ':' + selectedNote.pitch}
             />
           );
         }
@@ -87,7 +92,7 @@ const RNestedList: React.FC<{
   );
 }
 
-const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote }) => {
+const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote, selectedNote }) => {
   const [token, setToken] = useState<Token | null>(null);
   const [heading, setHeading] = useState<string>("");
 
@@ -108,7 +113,7 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote }) => {
       <div style={{ flex: 3}}>
         <RNestedList
           onHover={updateTokenInfo}
-          list={data} level={0} parentIndex={[]} hoveredNote={hoveredNote}/>
+          list={data} level={0} parentIndex={[]} hoveredNote={hoveredNote} selectedNote={selectedNote}/>
       </div>
     </div>
   );  

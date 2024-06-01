@@ -4,12 +4,14 @@ import { Note } from '../interfaces/ApiResponse';
 interface PianoRollDisplayProps {
     notes: Note[][];
     onNoteHover: (note: Note | null) => void;
+    onNoteSelect: (note: Note | null) => void;
     track?: number;
 }
 
-const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover, track = 0 }) => {
+const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover, onNoteSelect, track = 0 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredNote, setHoveredNote] = useState<Note | null>(null);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   const noteHeight = 20;
   const keyWidth = 75;
@@ -71,7 +73,8 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
 
     const drawNotes = () => {
       trackNotes.forEach(note => {
-        ctx.fillStyle = note === hoveredNote ? 'red' : 'blue';
+        ctx.fillStyle = note === hoveredNote ? '#ebcc34' : note === selectedNote ? '#de1818' : '#1c13d1';
+        
         const x = note.start * timeScale; // Simplified position calculation
         const y = canvasHeight - (note.pitch - lowestOctaveNote + 1) * noteHeight; // Corrected position calculation
         const width = (note.end - note.start) * timeScale;
@@ -79,7 +82,7 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
         console.log(`Drawing note: ${note.name} at x=${x}, y=${y}, width=${width}`); // Log positions and size
 
         ctx.fillRect(x + keyWidth, y, width, noteHeight);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = note === hoveredNote ? 'black' : 'white';
         ctx.fillText(note.name, x + keyWidth + 2, y + noteHeight - 2);
       });
     };
@@ -108,7 +111,7 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
     drawGrid();
     drawPianoKeys();
     drawNotes();
-  }, [notes, track, hoveredNote, lowestNote, highestNote, lowestOctaveNote, highestOctaveNote, maxTime]);
+  }, [notes, track, hoveredNote, selectedNote, lowestNote, highestNote, lowestOctaveNote, highestOctaveNote, maxTime]);
 
   const handleMouseMove = (event: React.MouseEvent) => {
     const canvas = canvasRef.current;
@@ -129,6 +132,26 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
     setHoveredNote(hovered || null);
     onNoteHover(hovered || null);
   };
+  
+  const handleNoteClick = (event: React.MouseEvent) => {
+    const canvas = canvasRef.current;
+    const rect = canvas?.getBoundingClientRect();
+
+    if (!canvas || !rect) {
+      return;
+    }
+
+    const x = event.clientX - rect.left - keyWidth;
+    const y = event.clientY - rect.top;
+    const clicked = trackNotes.find(note => {
+      const noteX = note.start * timeScale;
+      const noteY = canvasHeight - (note.pitch - lowestOctaveNote + 1) * noteHeight;
+      const noteWidth = (note.end - note.start) * timeScale;
+      return x >= noteX && x <= noteX + noteWidth && y >= noteY && y <= noteY + noteHeight;
+    });
+    setSelectedNote(clicked || null);
+    onNoteSelect(clicked || null);
+  };
 
   return (
     <canvas
@@ -136,6 +159,7 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
       width={canvasWidth}
       height={canvasHeight}
       onMouseMove={handleMouseMove}
+      onClick={handleNoteClick}
       style={{ border: '1px solid black' }}
     />
   );

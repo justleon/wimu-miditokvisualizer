@@ -38,6 +38,7 @@ function App() {
   const [deleteEqualSuccessiveTimeSigChanges, setDeleteEqualSuccessiveTimeSigChanges] = useState<boolean>(false);
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
   const [hoveredNote, setHoveredNote] = useState<Note | null>(null);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   const handleFileChange = (file: File) => {
     if (selectedFile !== file) {
@@ -139,6 +140,7 @@ function App() {
 
   const handleUpload = (event: React.FormEvent) => {
     event.preventDefault();
+    setSelectedNote(null);
     if (selectedFile) {
       const formData = new FormData();
       const configData = {
@@ -203,6 +205,10 @@ function App() {
   const handleNoteHover = (note: Note | null) => {
     setHoveredNote(note);
   };
+
+  const handleNoteSelect = (note: Note | null) => {
+    setSelectedNote(note);
+  }
 
   return (
     <div className="App">
@@ -439,13 +445,19 @@ function App() {
         <div style={{ display: 'flex', width: '100%'}}>
           <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data ? <DataDisplay data={responseData.data.tokens} hoveredNote={hoveredNote} /> : responseData?.error}
+              {responseData?.data ? <DataDisplay data={responseData.data.tokens} hoveredNote={hoveredNote} selectedNote={selectedNote} /> : responseData?.error}
             </ErrorBoundary>
           </div>
 
           <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data && responseData.data.notes.length > 0 ? <PianoRollDisplay notes={responseData.data.notes} onNoteHover={handleNoteHover} track={0} /> : responseData?.error}
+              {responseData?.data && responseData.data.notes.length > 0 ? 
+                <PianoRollDisplay
+                  notes={responseData.data.notes}
+                  onNoteHover={handleNoteHover}
+                  onNoteSelect={handleNoteSelect}
+                  track={0}
+                /> : responseData?.error}
             </ErrorBoundary>
           </div>
 

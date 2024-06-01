@@ -5,7 +5,8 @@ interface PianoRollBlockProps {
   item: Token;
   onHover: (t: Token | null, heading: string) => void;
   heading: string; // Add heading as a prop
-  highlight: boolean;
+  highlight: boolean | null;
+  selected: boolean | null;
 }
 
 export function TokenTypeToColor(type: string) {
@@ -27,7 +28,7 @@ export function TokenTypeToColor(type: string) {
 }
 
 
-const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, heading, highlight }) => {
+const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, heading, highlight, selected }) => {
 
   const handleMouseEnter = () => {
     onHover(item, heading);
@@ -45,7 +46,8 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, hea
         border: '1px solid #ccc',
         margin: '5px',
         position: 'relative',
-        backgroundColor: highlight ? 'yellow' : TokenTypeToColor(item.type)
+        backgroundColor: highlight ? '#ebcc34' : selected ? '#de1818' : TokenTypeToColor(item.type),
+        color: highlight ? '#000000' : 'white'
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
