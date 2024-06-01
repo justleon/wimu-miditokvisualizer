@@ -4,6 +4,15 @@ interface Token {
   time: number;
   program: number;
   desc: string;
+  note_id?: string | null;
+}
+
+interface Note {
+  pitch: number;
+  name: string;
+	start: number;
+	end: number;
+	velocity: number;
 }
 
 interface MusicInfoData {
@@ -24,7 +33,7 @@ interface MusicInfoData {
 interface DataStructure {
   tokens: NestedList<Token>;
   metrics: MusicInfoData;
-  notes: any[];
+  notes: Note[][];
 }
 
 interface ApiResponse {
@@ -35,4 +44,4 @@ interface ApiResponse {
 
 type NestedList<T> = Array<T | NestedList<T>>;
 
-export type { Token, ApiResponse, NestedList, MusicInfoData };
+export type { Token, Note, ApiResponse, NestedList, MusicInfoData };

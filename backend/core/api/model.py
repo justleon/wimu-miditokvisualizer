@@ -99,3 +99,11 @@ class MetricsData:
 
     empty_beat_rate: float
     drum_pattern_consistency: float
+
+@dataclass
+class Note:
+    pitch: int
+    name: str
+    start: int
+    end: int
+    velocity: int

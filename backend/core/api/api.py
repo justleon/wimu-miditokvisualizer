@@ -38,13 +38,18 @@ async def process(config: ConfigModel = Body(...), file: UploadFile = File(...))
         if file.content_type not in ["audio/mid", "audio/midi", "audio/x-mid", "audio/x-midi"]:
             raise HTTPException(status_code=415, detail="Unsupported file type")
         midi_bytes: bytes = await file.read()
-        tokens: List = tokenize_midi_file(config, midi_bytes)
+        tokens, notes = tokenize_midi_file(config, midi_bytes)
         serialized_tokens = json.dumps(tokens, cls=TokSequenceEncoder)
+        serialized_notes = [[note.__dict__ for note in track_notes] for track_notes in notes]
         metrics: MusicInformationData = retrieve_information_from_midi(midi_bytes)
         return JSONResponse(
             content={
                 "success": True,
-                "data": {"tokens": json.loads(serialized_tokens), "metrics": json.loads(metrics.model_dump_json())},
+                "data": {
+                    "tokens": json.loads(serialized_tokens),
+                    "notes": serialized_notes,
+                    "metrics": json.loads(metrics.model_dump_json())
+                },
                 "error": None,
             }
         )

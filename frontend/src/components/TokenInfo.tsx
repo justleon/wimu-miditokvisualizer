@@ -1,6 +1,6 @@
 import React from 'react';
 import { Token } from '../interfaces/ApiResponse';
-import { TokenTypeToColor } from './PianoRollBlock';
+import { TokenTypeToColor } from './TokenBlock';
 
 interface DataDisplayProps {
   token: Token | null;
@@ -42,6 +42,9 @@ const TokenInfo: React.FC<DataDisplayProps> = ({ token, heading }) => {
         </div>
         <div style={{ fontSize: '14px' }}>
           <strong>Desc:</strong> {token.desc}
+        </div>
+        <div style={{ fontSize: '14px' }}>
+          <strong>Note ID:</strong> {token.note_id}
         </div>
       </div>
     )}
