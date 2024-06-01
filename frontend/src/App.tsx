@@ -6,7 +6,7 @@ import DataDisplay from './components/DataDisplay';
 import MusicInfoDisplay from './components/MusicInfoDisplay';
 import RangeSlider from './components/RangeSlider';
 import SingleValueSlider from './components/SingleValueSlider';
-import { ApiResponse, Note } from './interfaces/ApiResponse';
+import { ApiResponse, Token, Note } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
 import PianoRollDisplay from './components/PianoRollDisplay';
 
@@ -39,6 +39,8 @@ function App() {
   const [showTokenizerConfig, setShowTokenizerConfig] = useState<boolean>(false);
   const [hoveredNote, setHoveredNote] = useState<Note | null>(null);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [hoveredToken, setHoveredToken] = useState<Token | null>(null);
+  const [selectedToken, setSelectedToken] = useState<Token | null>(null);
 
   const handleFileChange = (file: File) => {
     if (selectedFile !== file) {
@@ -141,6 +143,7 @@ function App() {
   const handleUpload = (event: React.FormEvent) => {
     event.preventDefault();
     setSelectedNote(null);
+    setSelectedToken(null);
     if (selectedFile) {
       const formData = new FormData();
       const configData = {
@@ -208,6 +211,16 @@ function App() {
 
   const handleNoteSelect = (note: Note | null) => {
     setSelectedNote(note);
+    setSelectedToken(null);
+  }
+
+  const handleTokenHover = (token: Token | null) => {
+    setHoveredToken(token);
+  };
+
+  const handleTokenSelect = (token: Token | null) => {
+    setSelectedToken(token);
+    setSelectedNote(null);
   }
 
   return (
@@ -445,7 +458,16 @@ function App() {
         <div style={{ display: 'flex', width: '100%'}}>
           <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data ? <DataDisplay data={responseData.data.tokens} hoveredNote={hoveredNote} selectedNote={selectedNote} /> : responseData?.error}
+              {responseData?.data ?
+                <DataDisplay 
+                  data={responseData.data.tokens}
+                  hoveredNote={hoveredNote}
+                  selectedNote={selectedNote}
+                  onTokenHover={handleTokenHover}
+                  onTokenSelect={handleTokenSelect}
+                  hoveredToken={hoveredToken}
+                  selectedToken={selectedToken}
+                /> : responseData?.error}
             </ErrorBoundary>
           </div>
 
@@ -456,6 +478,8 @@ function App() {
                   notes={responseData.data.notes}
                   onNoteHover={handleNoteHover}
                   onNoteSelect={handleNoteSelect}
+                  hoveredToken={hoveredToken}
+                  selectedToken={selectedToken}
                   track={0}
                 /> : responseData?.error}
             </ErrorBoundary>

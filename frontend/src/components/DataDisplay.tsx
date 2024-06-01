@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Token, NestedList, Note } from '../interfaces/ApiResponse';
-import PianoRollBlock from './PianoRollBlock';
+import TokenBlock from './TokenBlock';
 import TokenInfo from './TokenInfo';
 
 interface DataDisplayProps {
   data: NestedList<Token>;
   hoveredNote: Note | null;
   selectedNote: Note | null;
+  onTokenHover: (token: Token | null) => void;
+  onTokenSelect: (token: Token | null) => void;
+  hoveredToken: Token | null;
+  selectedToken: Token | null;
 }
 
 function isTokenArray(value: NestedList<Token>): value is Token[] {
@@ -23,12 +27,15 @@ const chunkTokens = (tokens: Token[], size: number): Token[][] => {
 
 const RNestedList: React.FC<{
   onHover: (t: Token | null, heading: string) => void;
+  onSelect: (t: Token | null) => void;
   list: NestedList<Token>;
   level: number;
   parentIndex: number[];
   hoveredNote: Note | null;
   selectedNote: Note | null;
-}> = ({ onHover, list, level, parentIndex, hoveredNote, selectedNote }) => {
+  hoveredToken: Token | null;
+  selectedToken: Token | null;
+}> = ({ onHover, onSelect, list, level, parentIndex, hoveredNote, selectedNote, hoveredToken, selectedToken }) => {
   return (
     <>
       {list.map((item, index) => {
@@ -44,13 +51,20 @@ const RNestedList: React.FC<{
                 {chunkedTokens.map((chunk, chunkIndex) => (
                   <div key={chunkIndex} style={{ display: 'flex', flexDirection: 'row' }}>
                     {chunk.map((token, tokenIndex) => (
-                      <PianoRollBlock
+                      <TokenBlock
                         key={tokenIndex}
                         item={token}
                         onHover={onHover}
+                        onSelect={onSelect}
                         heading={heading}
-                        highlight={hoveredNote && token.note_id === hoveredNote.start + ':' + hoveredNote.pitch}
-                        selected={selectedNote && token.note_id === selectedNote.start + ':' + selectedNote.pitch}
+                        highlight={
+                          (hoveredNote && token.note_id === hoveredNote.start + ':' + hoveredNote.pitch) ||
+                          (hoveredToken && token.note_id === hoveredToken.note_id)
+                        }
+                        selected={
+                          (selectedNote && token.note_id === selectedNote.start + ':' + selectedNote.pitch) ||
+                          (selectedToken && token.note_id === selectedToken.note_id)
+                        }
                       />
                     ))}
                   </div>
@@ -64,11 +78,14 @@ const RNestedList: React.FC<{
                 <div style={{ marginRight: '5px' }}>{heading}</div>
                 <RNestedList
                   onHover={onHover}
+                  onSelect={onSelect}
                   list={item}
                   level={level + 1}
                   parentIndex={currentIndex}
                   hoveredNote={hoveredNote}
                   selectedNote={selectedNote}
+                  hoveredToken={hoveredToken}
+                  selectedToken={selectedToken}
                 />
               </div>
             );
@@ -76,13 +93,20 @@ const RNestedList: React.FC<{
         } else {
           // Handle the case when item is a single Token (if ever, depending on your data structure)
           return (
-            <PianoRollBlock
+            <TokenBlock
               key={index}
               item={item as Token}
               onHover={onHover}
+              onSelect={onSelect}
               heading={heading}
-              highlight={hoveredNote && item.note_id === hoveredNote.start + ':' + hoveredNote.pitch}
-              selected={selectedNote && item.note_id === selectedNote.start + ':' + selectedNote.pitch}
+              highlight={
+                (hoveredNote && item.note_id === hoveredNote.start + ':' + hoveredNote.pitch) ||
+                (hoveredToken && item.note_id === hoveredToken.note_id)
+              }
+              selected={
+                (selectedNote && item.note_id === selectedNote.start + ':' + selectedNote.pitch) ||
+                (selectedToken && item.note_id === selectedToken.note_id)
+              }
             />
           );
         }
@@ -92,7 +116,7 @@ const RNestedList: React.FC<{
   );
 }
 
-const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote, selectedNote }) => {
+const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote, selectedNote, hoveredToken, selectedToken, onTokenHover, onTokenSelect }) => {
   const [token, setToken] = useState<Token | null>(null);
   const [heading, setHeading] = useState<string>("");
 
@@ -112,8 +136,18 @@ const DataDisplay: React.FC<DataDisplayProps> = ({ data, hoveredNote, selectedNo
       </div>
       <div style={{ flex: 3}}>
         <RNestedList
-          onHover={updateTokenInfo}
-          list={data} level={0} parentIndex={[]} hoveredNote={hoveredNote} selectedNote={selectedNote}/>
+          onHover={(token, heading) => {
+            onTokenHover(token);
+            updateTokenInfo(token, heading);
+          }}
+          onSelect={onTokenSelect}
+          list={data}
+          level={0}
+          parentIndex={[]}
+          hoveredNote={hoveredNote}
+          selectedNote={selectedNote}
+          hoveredToken={hoveredToken}
+          selectedToken={selectedToken}/>
       </div>
     </div>
   );  

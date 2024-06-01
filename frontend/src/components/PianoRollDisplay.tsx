@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Note } from '../interfaces/ApiResponse';
+import { Note, Token } from '../interfaces/ApiResponse';
+import { hover } from '@testing-library/user-event/dist/hover';
 
 interface PianoRollDisplayProps {
     notes: Note[][];
     onNoteHover: (note: Note | null) => void;
     onNoteSelect: (note: Note | null) => void;
     track?: number;
+    hoveredToken: Token | null;
+    selectedToken: Token | null;
 }
 
-const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover, onNoteSelect, track = 0 }) => {
+const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover, onNoteSelect, hoveredToken, selectedToken, track = 0 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredNote, setHoveredNote] = useState<Note | null>(null);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -73,16 +76,23 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
 
     const drawNotes = () => {
       trackNotes.forEach(note => {
-        ctx.fillStyle = note === hoveredNote ? '#ebcc34' : note === selectedNote ? '#de1818' : '#1c13d1';
+        const highlight_token = hoveredToken && note.start + ':' + note.pitch === hoveredToken.note_id;
+        const selected_token = selectedToken && note.start + ':' + note.pitch === selectedToken.note_id;
+
+        const highlight_note = note === hoveredNote;
+        const selected_note = note === selectedNote;
+
+        const highlight = highlight_token || highlight_note;
+        const selected = selected_token || selected_note;
+
+        ctx.fillStyle = highlight ? '#ebcc34' : selected ? '#de1818' : '#1c13d1';
         
         const x = note.start * timeScale; // Simplified position calculation
         const y = canvasHeight - (note.pitch - lowestOctaveNote + 1) * noteHeight; // Corrected position calculation
         const width = (note.end - note.start) * timeScale;
 
-        console.log(`Drawing note: ${note.name} at x=${x}, y=${y}, width=${width}`); // Log positions and size
-
         ctx.fillRect(x + keyWidth, y, width, noteHeight);
-        ctx.fillStyle = note === hoveredNote ? 'black' : 'white';
+        ctx.fillStyle = highlight ? 'black' : 'white';
         ctx.fillText(note.name, x + keyWidth + 2, y + noteHeight - 2);
       });
     };
@@ -111,7 +121,7 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
     drawGrid();
     drawPianoKeys();
     drawNotes();
-  }, [notes, track, hoveredNote, selectedNote, lowestNote, highestNote, lowestOctaveNote, highestOctaveNote, maxTime]);
+  }, [notes, track, hoveredToken, selectedToken, hoveredNote, selectedNote, lowestNote, highestNote, lowestOctaveNote, highestOctaveNote, maxTime]);
 
   const handleMouseMove = (event: React.MouseEvent) => {
     const canvas = canvasRef.current;
@@ -131,6 +141,11 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
     });
     setHoveredNote(hovered || null);
     onNoteHover(hovered || null);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredNote(null);
+    onNoteHover(null);
   };
   
   const handleNoteClick = (event: React.MouseEvent) => {
@@ -153,12 +168,29 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
     onNoteSelect(clicked || null);
   };
 
+  useEffect(() => {
+    if (hoveredToken) {
+      const hoveredNote = trackNotes.find(note => note.start + ':' + note.pitch === hoveredToken.note_id);
+      setHoveredNote(hoveredNote || null);
+      onNoteHover(hoveredNote || null);
+    }
+  }, [hoveredToken, trackNotes, onNoteHover]);
+
+  useEffect(() => {
+    if (selectedToken) {
+      const selectedNote = trackNotes.find(note => note.start + ':' + note.pitch === selectedToken.note_id);
+      setSelectedNote(selectedNote || null);
+      onNoteSelect(selectedNote || null);
+    }
+  }, [selectedToken, trackNotes, onNoteSelect]);
+
   return (
     <canvas
       ref={canvasRef}
       width={canvasWidth}
       height={canvasHeight}
       onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       onClick={handleNoteClick}
       style={{ border: '1px solid black' }}
     />

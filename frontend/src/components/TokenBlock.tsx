@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import { Token } from '../interfaces/ApiResponse';
 
-interface PianoRollBlockProps {
+interface TokenBlockProps {
   item: Token;
   onHover: (t: Token | null, heading: string) => void;
+  onSelect: (t: Token | null) => void;
   heading: string; // Add heading as a prop
   highlight: boolean | null;
   selected: boolean | null;
@@ -28,13 +29,20 @@ export function TokenTypeToColor(type: string) {
 }
 
 
-const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, heading, highlight, selected }) => {
+const TokenBlock: React.FC<TokenBlockProps> = memo(({ item, onHover, onSelect, heading, highlight, selected }) => {
 
   const handleMouseEnter = () => {
-    onHover(item, heading);
+    if (item.note_id) {
+      onHover(item, heading);
+    }
   };
   const handleMouseLeave = () => {
     onHover(null, "");
+  };
+  const handleClick = () => {
+    if (item.note_id) {
+      onSelect(item);
+    }
   };
 
   return (
@@ -51,6 +59,7 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, hea
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
     >
       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
         <div style={{ fontSize: '8px' }}>
@@ -61,4 +70,4 @@ const PianoRollBlock: React.FC<PianoRollBlockProps> = memo(({ item, onHover, hea
   );
 });
 
-export default PianoRollBlock;
+export default TokenBlock;

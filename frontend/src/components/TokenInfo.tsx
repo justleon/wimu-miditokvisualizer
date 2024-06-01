@@ -1,6 +1,6 @@
 import React from 'react';
 import { Token } from '../interfaces/ApiResponse';
-import { TokenTypeToColor } from './PianoRollBlock';
+import { TokenTypeToColor } from './TokenBlock';
 
 interface DataDisplayProps {
   token: Token | null;
