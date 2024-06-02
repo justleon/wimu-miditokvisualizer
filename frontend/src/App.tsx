@@ -9,6 +9,8 @@ import SingleValueSlider from './components/SingleValueSlider';
 import { ApiResponse, Token, Note } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
 import PianoRollDisplay from './components/PianoRollDisplay';
+import FilePlayback from './components/FilePlayback';
+
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
@@ -452,6 +454,12 @@ function App() {
         <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <ErrorBoundary fallback={<p>Something went wrong</p>}>
             {responseData?.data ? <MusicInfoDisplay data={responseData.data.metrics} /> : responseData?.error}
+          </ErrorBoundary>
+        </div>
+
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            {(responseData?.data && selectedFile) ? <FilePlayback file={selectedFile} /> : null}
           </ErrorBoundary>
         </div>
 
