@@ -438,64 +438,64 @@ function App() {
             </TabList>
 
             {responses.map((res, index) => (
-  <TabPanel key={index}>
-    {res.response ? (
-      <>
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-          <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            {res.response?.data ? <MusicInfoDisplay data={res.response.data.metrics} /> : res.response?.error}
-          </ErrorBoundary>
-        </div>
-        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-          <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            {res.response?.data ? <FilePlayback file={res.file} /> : null}
-          </ErrorBoundary>
-        </div>
-        <div style={{ display: 'flex', width: '100%', maxWidth: '100vw' }}>
-          <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
-            <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {res.response?.data ?
-                <DataDisplay
-                  data={res.response.data.tokens}
-                  hoveredNote={hoveredNote}
-                  selectedNote={selectedNote}
-                  onTokenHover={handleTokenHover}
-                  onTokenSelect={handleTokenSelect}
-                  hoveredToken={hoveredToken}
-                  selectedToken={selectedToken}
-                /> : res.response?.error}
-            </ErrorBoundary>
-          </div>
-          <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
-            <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {res.response?.data && res.response.data.notes.length > 0 ? (
-                <Tabs>
-                  <TabList>
-                    {res.response.data.notes.map((_, idx) => (
-                      <Tab key={idx}>Track {idx + 1}</Tab>
-                    ))}
-                  </TabList>
-                  {res.response.data.notes.map((notes, idx) => (
-                    <TabPanel key={idx}>
-                      <PianoRollDisplay
-                        notes={res.response?.data?.notes ?? [[]]}
-                        onNoteHover={handleNoteHover}
-                        onNoteSelect={handleNoteSelect}
-                        hoveredToken={hoveredToken}
-                        selectedToken={selectedToken}
-                        track={idx}
-                      />
-                    </TabPanel>
-                  ))}
-                </Tabs>
-              ) : res.response?.error}
-            </ErrorBoundary>
-          </div>
-        </div>
-      </>
-    ) : <p>No response data available</p>}
-  </TabPanel>
-))}
+            <TabPanel key={index}>
+              {res.response ? (
+                <>
+                  <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                    <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                      {res.response?.data ? <MusicInfoDisplay data={res.response.data.metrics} /> : res.response?.error}
+                    </ErrorBoundary>
+                  </div>
+                  <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                    <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                      {res.response?.data ? <FilePlayback file={res.file} /> : null}
+                    </ErrorBoundary>
+                  </div>
+                  <div style={{ display: 'flex', width: '100%', maxWidth: '100vw' }}>
+                    <div style={{ overflowY: 'auto', whiteSpace: 'nowrap', maxHeight: '100vh', flex: '0 0 50%' }}>
+                      <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                        {res.response?.data ?
+                          <DataDisplay
+                            data={res.response.data.tokens}
+                            hoveredNote={hoveredNote}
+                            selectedNote={selectedNote}
+                            onTokenHover={handleTokenHover}
+                            onTokenSelect={handleTokenSelect}
+                            hoveredToken={hoveredToken}
+                            selectedToken={selectedToken}
+                          /> : res.response?.error}
+                      </ErrorBoundary>
+                    </div>
+                    <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
+                      <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                        {res.response?.data && res.response.data.notes.length > 0 ? (
+                          <Tabs>
+                            <TabList>
+                              {res.response.data.notes.map((_, idx) => (
+                                <Tab key={idx}>Track {idx + 1}</Tab>
+                              ))}
+                            </TabList>
+                            {res.response.data.notes.map((notes, idx) => (
+                              <TabPanel key={idx}>
+                                <PianoRollDisplay
+                                  notes={res.response?.data?.notes ?? [[]]}
+                                  onNoteHover={handleNoteHover}
+                                  onNoteSelect={handleNoteSelect}
+                                  hoveredToken={hoveredToken}
+                                  selectedToken={selectedToken}
+                                  track={idx}
+                                />
+                              </TabPanel>
+                            ))}
+                          </Tabs>
+                        ) : res.response?.error}
+                      </ErrorBoundary>
+                    </div>
+                  </div>
+                </>
+              ) : <p>No response data available</p>}
+            </TabPanel>
+          ))}
 
           </Tabs>
         )}
