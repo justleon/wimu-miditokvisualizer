@@ -184,15 +184,17 @@ const PianoRollDisplay: React.FC<PianoRollDisplayProps> = ({ notes, onNoteHover,
   }, [selectedToken, trackNotes, onNoteSelect]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={canvasWidth}
-      height={canvasHeight}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleNoteClick}
-      style={{ border: '1px solid black' }}
-    />
+    <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+      <canvas
+        ref={canvasRef}
+        width={canvasWidth}
+        height={canvasHeight}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleNoteClick}
+        style={{ border: '1px solid black' }}
+      />
+    </div>
   );
 };
 
