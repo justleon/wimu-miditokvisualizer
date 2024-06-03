@@ -10,7 +10,8 @@ import { ApiResponse, Token, Note } from './interfaces/ApiResponse';
 import ErrorBoundary from './components/ErrorBoundary';
 import PianoRollDisplay from './components/PianoRollDisplay';
 import FilePlayback from './components/FilePlayback';
-
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 function App() {
   const [responseData, setResponseData] = useState<ApiResponse | null>(null);
@@ -188,14 +189,6 @@ function App() {
         })
         .then((data: ApiResponse) => {
           if (data.data) {
-            // data.data.notes.forEach((track, trackIndex) => {
-            //   console.log(`Track ${trackIndex + 1}:`);
-
-            //   track.forEach((note, noteIndex) => {
-            //     console.log(`  Note ${noteIndex + 1}: Pitch ${note.pitch}, Name ${note.name}, Start ${note.start}, End ${note.end}`);
-            //   });
-            // });
-
             setResponseData(data);
           }
         })
@@ -489,18 +482,29 @@ function App() {
 
           <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', flex: '0 0 50%' }}>
             <ErrorBoundary fallback={<p>Something went wrong</p>}>
-              {responseData?.data && responseData.data.notes.length > 0 ?
-                <PianoRollDisplay
-                  notes={responseData.data.notes}
-                  onNoteHover={handleNoteHover}
-                  onNoteSelect={handleNoteSelect}
-                  hoveredToken={hoveredToken}
-                  selectedToken={selectedToken}
-                  track={0}
-                /> : responseData?.error}
+              {responseData?.data && responseData.data.notes.length > 0 ? (
+                <Tabs>
+                  <TabList>
+                    {responseData.data.notes.map((_, index) => (
+                      <Tab key={index}>Track {index + 1}</Tab>
+                    ))}
+                  </TabList>
+                  {responseData.data.notes.map((notes, index) => (
+                    <TabPanel key={index}>
+                      <PianoRollDisplay
+                        notes={responseData.data.notes}
+                        onNoteHover={handleNoteHover}
+                        onNoteSelect={handleNoteSelect}
+                        hoveredToken={hoveredToken}
+                        selectedToken={selectedToken}
+                        track={index}
+                      />
+                    </TabPanel>
+                  ))}
+                </Tabs>
+              ) : responseData?.error}
             </ErrorBoundary>
           </div>
-
         </div>
       </header>
     </div>

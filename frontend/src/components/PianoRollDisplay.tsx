@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Note, Token } from '../interfaces/ApiResponse';
-import { hover } from '@testing-library/user-event/dist/hover';
 
 interface PianoRollDisplayProps {
     notes: Note[][];
