@@ -222,212 +222,226 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <form onSubmit={handleUpload}>
-          <div className="form-row">
-            <label htmlFor="tokenizerSelect">Select Tokenizer Type: </label>
-            <div>
-              <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
-                <option value="REMI">REMI</option>
-                <option value="MIDILike">MIDI-like</option>
-                <option value="TSD">TSD</option>
-                <option value="Structured">Structured</option>
-                <option value="CPWord">CPWord</option>
-                <option value="Octuple">Octuple</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="button" className="tokenizerConfigButton" onClick={toggleTokenizerConfig}>
-            {showTokenizerConfig ? 'Hide Tokenizer Config' : 'Show Tokenizer Config'}
-          </button>
-
-          {showTokenizerConfig && (
-            <>
-              <div className="tokenizerConfig">
-                <div className="form-row">
-                  <div className="label-container">
-                    <label htmlFor="pitchRange">Select Pitch Range: </label>
-                  </div>
-                  <div className="select-container">
-                    <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 127]} />
-                  </div>
+      <div>
+          {uploaderVisible ? (
+            <form onSubmit={handleUpload}>
+              <div className="form-row">
+                <label htmlFor="tokenizerSelect">Select Tokenizer Type: </label>
+                <div>
+                  <select id="tokenizerSelect" value={selectedTokenizer} onChange={handleTokenizerChange}>
+                    <option value="REMI">REMI</option>
+                    <option value="MIDILike">MIDI-like</option>
+                    <option value="TSD">TSD</option>
+                    <option value="Structured">Structured</option>
+                    <option value="CPWord">CPWord</option>
+                    <option value="Octuple">Octuple</option>
+                  </select>
                 </div>
+              </div>
 
-                <div className="form-row">
-                  <div className="label-container">
-                    <label htmlFor="velocityBins">Number of velocity bins: </label>
-                  </div>
-                  <div className="select-container">
-                    <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 127]} />
-                  </div>
-                </div>
+              <button type="button" className="tokenizerConfigButton" onClick={toggleTokenizerConfig}>
+                {showTokenizerConfig ? 'Hide Tokenizer Config' : 'Show Tokenizer Config'}
+              </button>
 
-                <div className="form-row">
-                  <label htmlFor="specialTokens">Special Tokens (comma-separated): </label>
-                  <input type="text" id="specialTokens" value={specialTokens} onChange={handleSpecialTokensChange} />
-                </div>
-
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={useChords} onChange={handleUseChordsChange} />
-                    Use Chords
-                  </label>
-                </div>
-
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={useRests} onChange={handleUseRestsChange} />
-                    Use Rests
-                  </label>
-                </div>
-
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={useTempos} onChange={handleUseTemposChange} />
-                    Use Tempos
-                  </label>
-                </div>
-
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={useTimeSignatures} onChange={handleUseTimeSignaturesChange} />
-                    Use Time Signatures
-                  </label>
-                </div>
-
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={useSustainPedals} onChange={handleUseSustainPedalsChange} />
-                    Use Sustain Pedals
-                  </label>
-                </div>
-
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={usePitchBends} onChange={handleUsePitchBendsChange} />
-                    Use Pitch Bends
-                  </label>
-                </div>
-
-                {selectedTokenizer === 'TSD' ||
-                selectedTokenizer === 'REMI' ||
-                selectedTokenizer === 'MIDILike' ||
-                selectedTokenizer === 'Structured' ||
-                selectedTokenizer === 'CPWord' ? (
-                  <div className="form-row">
-                    <label>
-                      <input type="checkbox" checked={usePrograms} onChange={handleUseProgramsChange} />
-                      Use Programs
-                    </label>
-                  </div>
-                ) : null}
-
-                {usePrograms && (
-                  <>
+              {showTokenizerConfig && (
+                <>
+                  <div className="tokenizerConfig">
                     <div className="form-row">
                       <div className="label-container">
-                        <label htmlFor="programsSlider">MIDI programs: </label>
+                        <label htmlFor="pitchRange">Select Pitch Range: </label>
                       </div>
                       <div className="select-container">
-                        <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 128]} />
+                        <RangeSlider onRangeChange={handlePitchRangeChange} initialValues={selectedPitchRange} limits={[0, 127]} />
                       </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="label-container">
+                        <label htmlFor="velocityBins">Number of velocity bins: </label>
+                      </div>
+                      <div className="select-container">
+                        <SingleValueSlider onValueChange={handleVelocityBinsChange} initialValue={selectedVelocityBins} limits={[0, 127]} />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <label htmlFor="specialTokens">Special Tokens (comma-separated): </label>
+                      <input type="text" id="specialTokens" value={specialTokens} onChange={handleSpecialTokensChange} />
                     </div>
 
                     <div className="form-row">
                       <label>
-                        <input type="checkbox" checked={oneTokenStreamForPrograms} onChange={handleOneTokenStreamForProgramsChange} />
-                        One Token Stream for Programs
+                        <input type="checkbox" checked={useChords} onChange={handleUseChordsChange} />
+                        Use Chords
                       </label>
                     </div>
 
-                    {selectedTokenizer === 'REMI' || selectedTokenizer === 'TSD' || selectedTokenizer === 'MIDILike' ? (
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={useRests} onChange={handleUseRestsChange} />
+                        Use Rests
+                      </label>
+                    </div>
+
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={useTempos} onChange={handleUseTemposChange} />
+                        Use Tempos
+                      </label>
+                    </div>
+
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={useTimeSignatures} onChange={handleUseTimeSignaturesChange} />
+                        Use Time Signatures
+                      </label>
+                    </div>
+
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={useSustainPedals} onChange={handleUseSustainPedalsChange} />
+                        Use Sustain Pedals
+                      </label>
+                    </div>
+
+                    <div className="form-row">
+                      <label>
+                        <input type="checkbox" checked={usePitchBends} onChange={handleUsePitchBendsChange} />
+                        Use Pitch Bends
+                      </label>
+                    </div>
+
+                    {selectedTokenizer === 'TSD' ||
+                      selectedTokenizer === 'REMI' ||
+                      selectedTokenizer === 'MIDILike' ||
+                      selectedTokenizer === 'Structured' ||
+                      selectedTokenizer === 'CPWord' ? (
                       <div className="form-row">
                         <label>
-                          <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
-                          Program Changes
+                          <input type="checkbox" checked={usePrograms} onChange={handleUseProgramsChange} />
+                          Use Programs
                         </label>
                       </div>
                     ) : null}
-                  </>
-                )}
 
-                <div className="form-row">
-                  <div className="label-container">
-                    <label htmlFor="nbTempos">Number of tempos bins: </label>
-                  </div>
-                  <div className="select-container">
-                    <SingleValueSlider onValueChange={handleNbTemposChange} initialValue={selectedNbTempos} limits={[0, 100]} />
-                  </div>
-                </div>
+                    {usePrograms && (
+                      <>
+                        <div className="form-row">
+                          <div className="label-container">
+                            <label htmlFor="programsSlider">MIDI programs: </label>
+                          </div>
+                          <div className="select-container">
+                            <RangeSlider onRangeChange={handleProgramsChange} initialValues={selectedPrograms} limits={[-1, 128]} />
+                          </div>
+                        </div>
 
-                <div className="form-row">
-                  <div className="label-container">
-                    <label htmlFor="tempoRange">Select Tempo Range: </label>
-                  </div>
-                  <div className="select-container">
-                    <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 350]} />
-                  </div>
-                </div>
+                        <div className="form-row">
+                          <label>
+                            <input type="checkbox" checked={oneTokenStreamForPrograms} onChange={handleOneTokenStreamForProgramsChange} />
+                            One Token Stream for Programs
+                          </label>
+                        </div>
 
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={logTempos} onChange={handleLogTemposChange} />
-                    Log Scaled Tempo Values
-                  </label>
-                </div>
+                        {selectedTokenizer === 'REMI' || selectedTokenizer === 'TSD' || selectedTokenizer === 'MIDILike' ? (
+                          <div className="form-row">
+                            <label>
+                              <input type="checkbox" checked={programChanges} onChange={handleProgramChangesChange} />
+                              Program Changes
+                            </label>
+                          </div>
+                        ) : null}
+                      </>
+                    )}
 
-                {selectedTokenizer !== 'Octuple' ? (
-                  <>
+                    <div className="form-row">
+                      <div className="label-container">
+                        <label htmlFor="nbTempos">Number of tempos bins: </label>
+                      </div>
+                      <div className="select-container">
+                        <SingleValueSlider onValueChange={handleNbTemposChange} initialValue={selectedNbTempos} limits={[0, 100]} />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="label-container">
+                        <label htmlFor="tempoRange">Select Tempo Range: </label>
+                      </div>
+                      <div className="select-container">
+                        <RangeSlider onRangeChange={handleTempoRangeChange} initialValues={selectedTempoRange} limits={[0, 350]} />
+                      </div>
+                    </div>
+
                     <div className="form-row">
                       <label>
-                        <input type="checkbox" checked={deleteEqualSuccessiveTempoChanges} onChange={handleDeleteEqualSuccessiveTempoChangesChange} />
-                        Delete Equal Successive Tempo Changes
+                        <input type="checkbox" checked={logTempos} onChange={handleLogTemposChange} />
+                        Log Scaled Tempo Values
                       </label>
                     </div>
+
+                    {selectedTokenizer !== 'Octuple' ? (
+                      <>
+                        <div className="form-row">
+                          <label>
+                            <input type="checkbox" checked={deleteEqualSuccessiveTempoChanges} onChange={handleDeleteEqualSuccessiveTempoChangesChange} />
+                            Delete Equal Successive Tempo Changes
+                          </label>
+                        </div>
+                        <div className="form-row">
+                          <label>
+                            <input type="checkbox" checked={deleteEqualSuccessiveTimeSigChanges} onChange={handleDeleteEqualSuccessiveTimeSigChangesChange} />
+                            Delete Equal Successive Time Signature Changes
+                          </label>
+                        </div>
+                      </>
+                    ) : null}
+
                     <div className="form-row">
                       <label>
-                        <input type="checkbox" checked={deleteEqualSuccessiveTimeSigChanges} onChange={handleDeleteEqualSuccessiveTimeSigChangesChange} />
-                        Delete Equal Successive Time Signature Changes
+                        <input type="checkbox" checked={sustainPedalDuration} onChange={handleSustainPedalDurationChange} />
+                        Sustain Pedal Duration
                       </label>
                     </div>
-                  </>
-                ) : null}
 
-                <div className="form-row">
-                  <label>
-                    <input type="checkbox" checked={sustainPedalDuration} onChange={handleSustainPedalDurationChange} />
-                    Sustain Pedal Duration
-                  </label>
-                </div>
+                    <div className="form-row">
+                      <div className="label-container">
+                        <label htmlFor="pitchBendRange">Select Pitch Bend Range: </label>
+                      </div>
+                      <div className="select-container">
+                        <RangeSlider onRangeChange={handlePitchBendRangeChange} initialValues={pitchBendRange} limits={[-8192, 8191]} />
+                      </div>
+                    </div>
 
-                <div className="form-row">
-                  <div className="label-container">
-                    <label htmlFor="pitchBendRange">Select Pitch Bend Range: </label>
-                  </div>
-                  <div className="select-container">
-                    <RangeSlider onRangeChange={handlePitchBendRangeChange} initialValues={pitchBendRange} limits={[-8192, 8191]} />
-                  </div>
-                </div>
+                    <div className="form-row">
+                      <div className="label-container">
+                        <label htmlFor="pitchBendRangeNumber">Select Pitch Bend Range: </label>
+                      </div>
+                      <div className="select-container">
+                        <SingleValueSlider onValueChange={handlePitchBendRangeNumberChange} initialValue={pitchBendRangeNumber} limits={[0, 100]} />
+                      </div>
+                    </div>
 
-                <div className="form-row">
-                  <div className="label-container">
-                    <label htmlFor="pitchBendRangeNumber">Select Pitch Bend Range: </label>
                   </div>
-                  <div className="select-container">
-                    <SingleValueSlider onValueChange={handlePitchBendRangeNumberChange} initialValue={pitchBendRangeNumber} limits={[0, 100]} />
-                  </div>
-                </div>
+                </>
+              )}
+
+              <div className="form-row">
+                <FileUpload onFileSelect={handleFileChange} acceptedFormats={".mid"} />
+                <button type="submit" disabled={loading}>
+                  {loading ? <Spinner /> : 'Upload'}
+                </button>
               </div>
-            </>
-          )}
+            </form>
+          ) : null}
 
-          <div className="form-row">
-            <FileUpload onFileSelect={handleFileChange} acceptedFormats={".mid"} />
-            <button type="submit" disabled={loading}>
-              {loading ? <Spinner /> : 'Upload'}
+          {responses.length > 0 ? (
+            <button
+              style={{ width: '100%', marginTop: 0, backgroundColor: 'transparent', borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
+              onClick={() => setUploaderVisible(!uploaderVisible)}
+            >
+              {uploaderVisible ? "Hide" : "Show"}
             </button>
-          </div>
-        </form>
+          ) : null}
+        </div>
 
         {responses.length > 0 && (
           <Tabs>
