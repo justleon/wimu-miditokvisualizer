@@ -32,9 +32,7 @@ export function TokenTypeToColor(type: string) {
 const TokenBlock: React.FC<TokenBlockProps> = memo(({ item, onHover, onSelect, heading, highlight, selected }) => {
 
   const handleMouseEnter = () => {
-    if (item.note_id) {
       onHover(item, heading);
-    }
   };
   const handleMouseLeave = () => {
     onHover(null, "");

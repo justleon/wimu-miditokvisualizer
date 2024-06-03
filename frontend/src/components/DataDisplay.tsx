@@ -59,7 +59,7 @@ const RNestedList: React.FC<{
                         heading={heading}
                         highlight={
                           (hoveredNote && token.note_id === hoveredNote.start + ':' + hoveredNote.pitch) ||
-                          (hoveredToken && token.note_id === hoveredToken.note_id)
+                          (hoveredToken && hoveredToken.note_id !== null && token.note_id === hoveredToken.note_id)
                         }
                         selected={
                           (selectedNote && token.note_id === selectedNote.start + ':' + selectedNote.pitch) ||
@@ -101,7 +101,7 @@ const RNestedList: React.FC<{
               heading={heading}
               highlight={
                 (hoveredNote && item.note_id === hoveredNote.start + ':' + hoveredNote.pitch) ||
-                (hoveredToken && item.note_id === hoveredToken.note_id)
+                (hoveredToken && hoveredToken.note_id !== null && item.note_id === hoveredToken.note_id)
               }
               selected={
                 (selectedNote && item.note_id === selectedNote.start + ':' + selectedNote.pitch) ||

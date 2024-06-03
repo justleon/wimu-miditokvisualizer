@@ -2,11 +2,26 @@
 
 MidiTok Visualizer to aplikacja webowa pozwalająca na wizualizację tokenizacji plików MIDI przez bibliotekę MidiTok.
 
-Pozwala na:
-- wgranie pliku MIDI z urządzenia
-- wybranie tokenizera i jego parametrów
-- przegląd wyodrębnionych tokenów w formacie przyjaznym dla użytkownika
+**Funkcjonalność dodana w wersji 2023Z:**
+- wgrywanie pliku MIDI z urządzenia,
+- wybranie tokenizera i jego parametrów,
+- przegląd wyodrębnionych tokenów w formacie przyjaznym dla użytkownika,
 - przegląd metryk symbolicznych (takich jak klucz, metrum, tempo) na podstawie MIDI
+
+**Funkcjonalność dodana w wersji 2024L:**
+- zmiana metody prezentacji tokenów na sposób bardziej czytelny (wyświetlanie w rzędach),
+- wyświetlanie tokenów osobnych track'ów pliku MIDI w osobnych zakładkach,
+- wyświetlanie piano roll'a z wgranym plikiem MIDI (osobne track'i/programy w osobnych zakładkach),
+- możliwość odtworzenia wgranego pliku MIDI,
+- możliwość zaznaczania i podświetlania tokenów oraz odpowiadających im dźwięków na piano roll'u
+- wyświetlanie szczegółowych informacji o tokenie w osobnej, powiększonej ramce
+
+**Potencjalna funkcjonalność do dodania w przyszłych wersjach:**
+- poprawa wydajności działania aplikacji przy wgrywanych bardzo dużych plikach MIDI,
+- dodanie implementacji reszty tokenizerów (MMM, MuMIDI, REMIPlus),
+- poprawa ogólnej oprawy graficznej aplikacji,
+- dodanie śledzenia obecnie odtwarzanej pozycji na piano roll'u
+
 
 ### Proces developerski
 
