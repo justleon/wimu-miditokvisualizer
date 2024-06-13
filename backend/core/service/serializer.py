@@ -13,7 +13,14 @@ class TokSequenceEncoder(json.JSONEncoder):
         if isinstance(obj, TokSequence):
             return obj.events
         if isinstance(obj, Event):
-            return {"type": obj.type, "value": obj.value, "time": obj.time, "program": obj.program, "desc": obj.desc}
+            return {
+                "type": obj.type,
+                "value": obj.value,
+                "time": obj.time,
+                "program": obj.program,
+                "desc": obj.desc,
+                "note_id": getattr(obj, 'note_id', None)
+            }
         if isinstance(obj, np.integer):
             return int(obj)
         if isinstance(obj, np.floating):
