@@ -1,161 +1,164 @@
-# WIMU-MidiTokVisualizer
+# MidiTok Visualizer
 
-MidiTok Visualizer to aplikacja webowa pozwalająca na wizualizację tokenizacji plików MIDI przez bibliotekę MidiTok.
+**[ [paper](https://arxiv.org/abs/2410.20518) ] | [ [ISMIR 2024 LBD page](https://ismir2024program.ismir.net/lbd_455.html) ] | [ [example deployment](https://miditok-visualizer-41e761c046c2.herokuapp.com) ]**
 
-**Funkcjonalność dodana w wersji 2023Z:**
-- wgrywanie pliku MIDI z urządzenia,
-- wybranie tokenizera i jego parametrów,
-- przegląd wyodrębnionych tokenów w formacie przyjaznym dla użytkownika,
-- przegląd metryk symbolicznych (takich jak klucz, metrum, tempo) na podstawie MIDI
+MidiTok Visualizer is a web application which allows to visualize MIDI tokenization techniques in a user-friendly way. It mostly includes the tokenizations from [MidiTok](https://github.com/Natooz/MidiTok). It aims to aid research and analysis of symbolic music, especially for researchers new to the field of MIDI processing.
 
-**Funkcjonalność dodana w wersji 2024L:**
-- zmiana metody prezentacji tokenów na sposób bardziej czytelny (wyświetlanie w rzędach),
-- możliwość wgrywania wielu plików i przełączania się pomiędzy nimi,
-- wyświetlanie piano roll'a z wgranym plikiem MIDI (osobne track'i/programy w osobnych zakładkach),
-- możliwość odtworzenia wgranego pliku MIDI,
-- możliwość zaznaczania i podświetlania tokenów oraz odpowiadających im dźwięków na piano roll'u
-- wyświetlanie szczegółowych informacji o tokenie w osobnej, powiększonej ramce
+MidiTok Visualizer has been published at the Late Breaking Demos session at ISMIR 2024.
 
-**Potencjalna funkcjonalność do dodania w przyszłych wersjach:**
-- poprawa wydajności działania aplikacji przy wgrywanych bardzo dużych plikach MIDI,
-- dodanie implementacji reszty tokenizerów (MMM, MuMIDI, REMIPlus),
-- poprawa ogólnej oprawy graficznej aplikacji,
-- dodanie śledzenia obecnie odtwarzanej pozycji na piano roll'u
+![Screenshot of app](img/miditok_visualizer_small.png)
+
+## Key Functionalities
+
+- **Uploading MIDI Files**: Users can upload MIDI files directly from their devices.
+- **Tokenizer Selection and Configuration**: The ability to choose a tokenizer and adjust its parameters.
+- **Token Overview**: A user-friendly display for reviewing extracted tokens.
+- **Symbolic Metrics Overview**: Visualization of symbolic metrics such as key, time signature, and tempo based on the uploaded MIDI file.
+- **Enhanced Token Presentation**: Improved readability with token display arranged in rows.
+- **Multi-File Support**: Users can upload multiple MIDI files and switch between them seamlessly.
+- **Piano Roll Display**: Visualization of the MIDI file in a piano roll format, with separate tracks/programs shown in individual tabs.
+- **MIDI Playback**: Ability to play back the uploaded MIDI file.
+- **Token Highlighting**: Users can select and highlight tokens, with corresponding notes displayed on the piano roll.
+- **Detailed Token Information**: Display of comprehensive token details in an expanded, separate pane.
+
+### Further work (contributors welcome! 😊)
+
+- **Performance Optimization**: Enhancing the application's performance for handling very large MIDI files.
+- **Additional Tokenizer Implementations**: Integration of further tokenizers, including MMM, MuMIDI, and REMIPlus.
+- **Graphic Design Improvements**: Upgrading the overall visual design of the application.
+- **Playback Tracking**: Adding a feature to visually track the current playback position on the piano roll.
 
 
-### Proces developerski
+## Building and running the app
 
-W celu zachowania zasad clean code, przed wrzuceniem commita na brancha, zaleca się wykonanie pre-commita. Aby uruchomić pre-commit, należy użyć komendy:
+### Docker Compose
 
+You can run the whole app using `docker compose`:
+
+```sh
+docker-compose up --build
 ```
-cd backend
-pre-commit run --all-files
-```
 
-W skład skryptu pre-commit wchodzą:
+### Frontend
 
-- black (formatowanie)
-- ruff (linting)
-- isort (sortowanie importów)
-- mypy (weryfikacja typowania)
+Basic run:
 
-### Budowanie i uruchamianie aplikacji
-
-#### Aplikacja frontendowa
-
-Podstawowe uruchamianie aplikacji:
-
-```
+```sh
 cd frontend
 npm install
 npm run dev
 ```
 
-Uruchamianie aplikacji przy pomocy Dockera:
+Using Docker:
 
-```
+```sh
 cd frontend
 docker build . -t frontend
 docker run frontend -p 3000:3000
 ```
 
-#### Aplikacja backendowa
+### Backend
 
-Podstawowe uruchamianie aplikacji:
+Basic run:
 
-```
+```sh
 cd backend
 poetry shell
 poetry install
 python -m core.main
 ```
 
-lub
+or
 
-```
+```sh
 poetry run python -m core.main
 ```
 
-Uruchamianie aplikacji przy pomocy Dockera:
+Using Docker:
 
-```
+```sh
 cd backend
 DOCKER_BUILDKIT=1 docker build --target=runtime . -t backend
 docker run backend -p 8000:8000
 ```
 
-#### Docker Compose
+## Testing
 
-Możliwe jest również uruchomienie całego projektu przy użyciu Docker Compose:
+### Frontend
 
-```
-docker-compose up --build
-```
+Unit tests written with `jest` can be ran with:
 
-### Testowanie aplikacji
-
-#### Aplikacja frontendowa
-
-Testy jednostkowe uruchamiane są przy użyciu *jest*:
-
-```
+```sh
 cd frontend
 npm install
 npm run test
 ```
 
-### Aplikacja backendowa
+### Backend
 
-Testy jednostkowe uruchamiane są przy użyciu *pytest*:
+Unit tests written with `pytest` can be ran with:
 
-```
+```sh
 poetry shell
 poetry install
 pytest
 ```
 
-lub:
+or
 
 ```
 poetry run pytest
 ```
 
-### Logi
+### Logging
 
-Zaimplementowano *middleware* na bazie *starlette*, który przy użyciu modułu *logging* tworzy logi dla każdego zapytania do serwera. Pojedynczy wpis w logach zawiera podstawowe dane dla pojedynczego zapytania oraz odpowiedzi serwera, jak również czas przetwarzania zapytania. Domyślnie logi zapisywane są do pliku *logfile.log*.
+MidiTok Visualizer includes middleware based on `starlette`, which uses `logging` for each request. A single entry contains basic data for a request and the respons, as well as the processing time. The logs are saved to `logfile.log` by default.
 
-### Deployment
+## Deployment
 
-Obie aplikacje są hostowane na Heroku. Aplikacja frontendowa jest dostępna pod adresem: [https://wimu-frontend-ccb0bbc023d3.herokuapp.com](https://wimu-frontend-ccb0bbc023d3.herokuapp.com)
+You can see an example deployment on Heroku [here](https://miditok-visualizer-41e761c046c2.herokuapp.com)
 
-### Oryginalni autorzy (2023Z)
+
+## Citation
+
+If you find MidiTok Visualizer useful, please consider citing our tool:
+
+```tex
+@inproceedings{wiszenko2024miditok,
+  title={MidiTok Visualizer: a tool for visualization and analysis of tokenized MIDI symbolic music},
+  author={Wiszenko, Micha{\l} and Stefa{\'n}ski, Kacper and Malesa, Piotr and Pokorzy{\'n}ski, {\L}ukasz and Modrzejewski, Mateusz},
+  booktitle={Extended Abstracts for the Late-Breaking Demo Session of the 25th International Society for Music Information Retrieval Conference},
+  organization={ISMIR},
+  year={2024}
+}
+```
+
+
+## Contributing
+
+We gladly welcome PRs with enhancements, features and improvements!
+
+We use pre-commit before commiting any changes:
+
+```sh
+cd backend
+pre-commit run --all-files
+```
+
+We use:
+
+- black (formatting)
+- ruff (linting)
+- isort (import sorting)
+- mypy (type checking)
+
+### Maintainers and contributors
 
 - Łukasz Pokorzyński
 - Olga Sapiechowska
 - Michał Wiszenko
-
-### Autorzy rozwijający projekt (2024L)
-
+- [Mateusz Modrzejewski](https://mamodrzejewski.github.io)
 - Kacper Stefański
 - Konstantin Panov
 - Piotr Malesa
 
-### Planowany harmonogram prac projektu
-
-- Tydzień 1 (19.02 - 23.02):	-
-- Tydzień 2 (26.02 - 01.03):	-
-- Tydzień 3 (04.03 - 08.03):	-
-- **Tydzień 4 (11.03 - 15.03)**:	 -
-- **Tydzień 5 (18.03 - 22.03)**:	Dostarczenie poprawionego design proposal'a ze zmodyfikowanym planem rozszerzenia aplikacji
-- **Tydzień 6 (25.03 - 29.03)**:    Przygotowanie środowiska do pracy nad projektem oraz rozpoczęcie rozwoju nowych funkcjonalności
-- **Tydzień 7 (01.04 - 05.04)**:	Przerwa świąteczna 
-- **Tydzień 8 (08.04 - 12.04)**:	Dalsze prace nad UI oraz prezentacja prototypu
-- **Tydzień 9 (15.04 - 19.04)**:    Dalsze prace nad UI
-- **Tydzień 10 (22.04 -26.04)**:	Ukończona część rozszerzenia UI
-- **Tydzień 11 (29.04 - 03.05)**:   Majówka
-- **Tydzień 12 (06.05 - 10.05)**:	Praca nad implementacją kolejnych tokenizerów (MMM, MuMIDI) i ewentualne poprawki UI
-- **Tydzień 13 (13.05 - 17.05)**:	Dostarczenie i zademonstrowanie funkcjonalnego prototypu
-- **Tydzień 14 (20.05 - 24.05)**:	Ukończenie rozszerzenia API o nowe tokenizery
-- **Tydzień 15 (27.05 - 31.05)**:   Praca nad poprawkami po pierwszej prezentacji projektu
-- **Tydzień 16 (03.06 - 07.06)**:	Oddanie projektu (szacowany termin)
-- Tydzień 17 (10.06 - 14.06):	-
